@@ -61,7 +61,7 @@
   async function portraits(characters,options={}){
     const result=[],limit=clamp(options.limit,80,400,200);
     for(const character of characters){
-      if(!/^data:image\//.test(character.image||'')){result.push(character);continue;}
+      if(character.imageMode==='img'||!/^data:image\//.test(character.image||'')){result.push(character);continue;}
       const ratio=character.imageShape==='portrait'?2/3:1;
       const image=await cropImage(character.image,{ratio,x:clamp(character.imageX,0,100,50),y:clamp(character.imageY,0,100,50),zoom:clamp(character.imageZoom,100,300,100),limit});
       result.push({...character,image,imageX:50,imageY:50,imageZoom:100,imageRatio:ratio});
