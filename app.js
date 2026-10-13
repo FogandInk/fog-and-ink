@@ -601,8 +601,8 @@ async function prepareExport(){
     const characters=await FogRisuExportImages.portraits(draft.characters);
     const html=await FogRisuExportImages.prepare(getExportHTML({sampleData,characters}));
     if(draft!==owner||JSON.stringify(draft)!==before){toast('편집 내용이 바뀌었어요. 다시 복사를 눌러 주세요.');return;}
-    $('export-source').value=html;const hasPhotos=!!draft.image||draft.characters.some(c=>c.image);
-    $('export-warning').hidden=!hasPhotos;$('export-warning').textContent=hasPhotos?'사진이 첨부되어 있다면 서식 있는 글 복사를 적극 권장합니다.':'';
+    $('export-source').value=html;
+    $('export-warning').hidden=true;$('export-warning').textContent='';
     $('export-message').textContent='접기와 영상이 유지되지 않으면 HTML 소스 복사를 사용해 주세요.';$('export-dialog').showModal();
   }catch(error){toast(error.message||'복사할 사진을 준비하지 못했어요. 다시 시도해 주세요.');}finally{button.disabled=false;}
 }
