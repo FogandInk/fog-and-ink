@@ -10,11 +10,13 @@
   function render(html){
     const doc=new DOMParser().parseFromString(html,'text/html');
     // Scene covers keep their background sizing, crop and height limit.
-    // Only character/persona portraits need the clipboard img conversion.
+    // Embedded portraits need img conversion for clipboard upload. Public URLs
+    // retain the same background crop as the preview, including zoom and X/Y.
     for(const slot of doc.querySelectorAll('.character-portrait')){
       // CSSOM may discard a very large data URL before it can be resized.
       const match=(slot.style.backgroundImage||slot.getAttribute('style')||'').match(/url\(\s*(?:"([^"]*)"|'([^']*)'|([^)]*))\s*\)/i);
       const src=match&&(match[1]||match[2]||match[3]);if(!src)continue;
+      if(!/^data:image\/(?:png|jpeg|webp|gif);base64,/i.test(src))continue;
       const padding=parseFloat(slot.style.paddingTop||slot.firstElementChild?.style.paddingTop)||100;
       const position=slot.style.backgroundPosition.split(/\s+/),zoom=parseFloat(slot.style.backgroundSize.match(/[\d.]+%/)?.[0])||100;
       const img=doc.createElement('img');img.src=src;img.alt=slot.getAttribute('aria-label')||'from RisuAI';
