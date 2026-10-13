@@ -35,7 +35,7 @@
       const timer=setTimeout(()=>{img.onload=img.onerror=null;reject(new Error('사진 처리 시간이 초과됐어요. 다시 복사해 주세요.'));},10000);
       img.onload=()=>{clearTimeout(timer);resolve();};img.onerror=()=>{clearTimeout(timer);reject(new Error('복사할 사진을 읽지 못했어요. 이미지 설정에서 다시 가져와 주세요.'));};img.src=src;
     });
-    const canvas=document.createElement('canvas'),ratio=clamp(options.ratio,.05,20,1);
+    const canvas=document.createElement('canvas'),ratio=options.preserveRatio?img.naturalWidth/img.naturalHeight:clamp(options.ratio,.05,20,1);
     if(options.zoom===100&&Math.abs(img.naturalWidth/img.naturalHeight-ratio)<.001&&Math.max(img.naturalWidth,img.naturalHeight)<=options.limit&&/^data:image\/(?:png|jpeg);base64,/.test(src)){cache.set(key,src);return src;}
     const width=Math.min(options.limit,img.naturalWidth),height=width/ratio;
     const resize=Math.min(1,options.limit/height);canvas.width=Math.max(1,Math.round(width*resize));canvas.height=Math.max(1,Math.round(height*resize));
@@ -61,7 +61,12 @@
   async function portraits(characters,options={}){
     const result=[],limit=clamp(options.limit,80,400,200);
     for(const character of characters){
-      if(character.imageMode==='img'||!/^data:image\//.test(character.image||'')){result.push(character);continue;}
+      if(!/^data:image\//.test(character.image||'')){result.push(character);continue;}
+      if(character.imageMode==='img'){
+        // Keep the full original framing and alpha, with the existing copy size limit.
+        const image=await cropImage(character.image,{preserveRatio:true,x:50,y:50,zoom:100,limit});
+        result.push({...character,image});continue;
+      }
       const ratio=character.imageShape==='portrait'?2/3:1;
       const image=await cropImage(character.image,{ratio,x:clamp(character.imageX,0,100,50),y:clamp(character.imageY,0,100,50),zoom:clamp(character.imageZoom,100,300,100),limit});
       result.push({...character,image,imageX:50,imageY:50,imageZoom:100,imageRatio:ratio});
