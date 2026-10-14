@@ -11,8 +11,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,400;6..96,500;6..96,600;6..96,700&family=DM+Sans:wght@400;500;600&family=Noto+Serif+KR:wght@400;500;600;700;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard-dynamic-subset.min.css">
-  <link rel="stylesheet" href="style.css?v=20261014-sidebar-gap">
-  <script defer src="logic.js?v=20261014-rain-credits"></script>
+  <link rel="stylesheet" href="style.css?v=20261014-hoyo-colors">
+  <script defer src="logic.js?v=20261014-hoyo-colors"></script>
   <script defer src="export-images.js"></script>
   <script defer src="clipboard.js"></script>
   <script defer src="app.js?v=20261014-rain-credits"></script>
@@ -185,6 +185,7 @@
     <section class="credits-group"><p>RISUCOPY | <a href="https://arca.live/b/characterai/163028005" target="_blank" rel="noopener noreferrer">RISUCOPY 개조판</a> | <a href="https://arca.live/b/characterai/174537243" target="_blank" rel="noopener noreferrer">번역캐시 JSON으로 빼는 플러그인</a> : 로그 긁어오는 기능을 참고</p></section>
     <section class="credits-group"><p><a href="https://arca.live/b/characterai/184372415" target="_blank" rel="noopener noreferrer">아카라이브 HTML 가이드 v 6.7.1 - 다크모드 글씨 fix</a></p><p class="credits-detail">- PC + 아카라이브 다크 모드 기준으로 라이트 모드 호환성을 지원할 수 있게 됨</p></section>
     <section class="credits-group"><p><a href="https://arca.live/b/characterai/174376281" target="_blank" rel="noopener noreferrer">도시에 테마</a> : 먹빛 회색 신문 팔레트 참고</p></section>
+    <p class="credits-copyright">© YYYYMD</p>
   </dialog>
   <dialog id="export-dialog"><button class="dialog-close" aria-label="복사 창 닫기">×</button><span class="eyebrow">READY FOR PRINT</span><h2>이야기를 가져가세요.</h2><p id="export-message">본문 편집기에 붙여넣어 주세요.</p><div id="export-warning" class="guide-note" hidden></div><div class="export-actions"><button id="copy-rich-btn" class="primary-btn">서식 있는 글 복사</button><button id="copy-source-btn" class="secondary-btn">HTML 소스 복사</button></div><details class="source-details"><summary>HTML 소스 보기</summary><textarea id="export-source" readonly aria-label="게시용 HTML 소스"></textarea></details><p class="field-hint">아카라이브에서 실제 게시 전 미리보기를 확인해 주세요.</p></dialog>
   <dialog id="reset-dialog"><span class="eyebrow">START A FRESH EDITION</span><h2>예시로 되돌릴까요?</h2><p>현재 편집한 내용이 예시 글로 바뀝니다.<br>단어·태그 정리의 입력값과 저장한 규칙은 유지합니다.<br>남길 내용은 먼저 ‘초안 저장’으로 보관해 주세요.</p><div class="export-actions"><button id="confirm-reset" class="primary-btn">기본값으로 되돌리기</button><button id="cancel-reset" class="secondary-btn">계속 편집하기</button></div></dialog>
