@@ -563,7 +563,7 @@ function scrollPreview(edge){
 $('preview-scroll-top').addEventListener('click',()=>scrollPreview('top'));
 $('preview-scroll-bottom').addEventListener('click',()=>scrollPreview('bottom'));
 $('reading-btn').addEventListener('click',()=>{const active=document.body.classList.toggle('reading-mode');$('reading-btn').innerHTML=(active?'편집으로 돌아가기':'읽기 모드')+' <span aria-hidden="true">⤢</span>';$('reading-btn').setAttribute('aria-pressed',String(active))});
-$('guide-btn').addEventListener('click',()=>$('guide-dialog').showModal());document.querySelectorAll('.dialog-close').forEach(b=>b.addEventListener('click',()=>b.closest('dialog').close()));document.querySelectorAll('dialog').forEach(d=>d.addEventListener('click',e=>{if(e.target===d){const r=d.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)d.close()}}));
+$('credits-btn').addEventListener('click',()=>$('credits-dialog').showModal());$('guide-btn').addEventListener('click',()=>$('guide-dialog').showModal());document.querySelectorAll('.dialog-close').forEach(b=>b.addEventListener('click',()=>b.closest('dialog').close()));document.querySelectorAll('dialog').forEach(d=>d.addEventListener('click',e=>{if(e.target===d){const r=d.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)d.close()}}));
 function getExportHTML(options={}){
   const t=theme(draft.paper,draft.transparentInk,draft);
   return FogRisuExportImages.render(arcaDarkModeHTML(buildExportHTML(options),t.bg));

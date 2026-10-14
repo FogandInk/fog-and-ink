@@ -1976,7 +1976,7 @@
   // Shared survivors appear once, followed by 2-only survivors and both bosses.
   const rainPalette=(name,note,colors,game,sourceURL='https://store.steampowered.com/app/632360/Risk_of_Rain_2/')=>newPalette(name,note,colors,'캐릭터 팔레트',sourceURL,{series:'리스크 오브 레인 1 & 2',sourceName:'공식 기본 외형·게임 스프라이트 참고 · 읽기용 조정',game,dialogueSaturation:.97});
   Object.assign(PALETTES,{
-    rorCommando:rainPalette('코만도 · Commando','황금빛 전투복 · 밝은 바이저와 강철',['#302719','#f3ead7','#dfb64f','#96b8c5','#8b7859'],'1·2'),
+    rorCommando:rainPalette('코만도 · Commando','노란 전투복 지면 · 짙은 바이저와 차가운 강철',['#e9c55d','#302719','#6b4c22','#335d76','#a18b53'],'1·2'),
     rorEnforcer:rainPalette('인포서 · Enforcer','푸른 장갑과 방패 · 노란 바이저와 강철',['#223a64','#edf1cf','#d6c354','#b6c3d8','#667ba7'],'1·2','https://store.steampowered.com/app/3055670/Risk_of_Rain_2_Hallowed_Concepts/'),
     rorBandit:rainPalette('밴디트 · Bandit','청록색 모자 · 갈색 코트와 밝은 셔츠',['#dce9e4','#3a2b22','#267e7c','#925e30','#8ba79f'],'1·2'),
     rorHuntress:rainPalette('헌트리스 · Huntress','붉은 장갑 지면 · 푸른 활과 따뜻한 금빛',['#7d3843','#f6e9e1','#9ecae3','#e8bf94','#bd8491'],'1·2'),
@@ -1991,17 +1991,17 @@
     rorMulT:rainPalette('MUL-T','회색 철판 지면 · 머스터드색 기계와 푸른 관절',['#d6d8d4','#313940','#8a681c','#365b88','#89928b'],'2'),
     rorArtificer:rainPalette('아티피서 · Artificer','흰 의복 · 검은 장갑과 불꽃·얼음',['#f6f3ee','#444b50','#b66c28','#427c8d','#a49b90'],'2'),
     rorRex:rainPalette('REX','올리브색 기계 · 분홍 꽃과 연두색 줄기',['#34362a','#eae8cf','#dd9bb6','#b6ce72','#878462'],'2'),
-    rorCaptain:rainPalette('캡틴 · Captain','밝은 제복 · 남색 모자와 황금빛 장식',['#e6e9e7','#203747','#366984','#8b6a2f','#72858c'],'2'),
-    rorHeretic:rainPalette('헤러틱 · Heretic','붉은 날개 · 회백색 가면과 차가운 보라',['#321c26','#eee8e9','#a5b8de','#e19787','#8d6b81'],'2'),
+    rorCaptain:rainPalette('캡틴 · Captain','짙은 남색 제복 지면 · 밝은 장갑과 금빛 장식',['#1e344c','#edf0e8','#d6b465','#95c4d7','#60768d'],'2'),
+    rorHeretic:rainPalette('이단자 · Heretic','짙은 붉은 날개 지면 · 회백색 가면과 차가운 보라',['#4a2027','#f3e6df','#bfc2e2','#e7a193','#97616b'],'2'),
     rorRailgunner:rainPalette('레일거너 · Railgunner','올리브색 후드 · 붉은 바이저와 보라색 총',['#e0e4d0','#313645','#9e3944','#5b5b8e','#84916a'],'2','https://store.steampowered.com/app/1607890/Risk_of_Rain_2__Survivors_of_the_Void/'),
-    rorVoidFiend:rainPalette('보이드 핀드 · Void Fiend','공허의 남보라 · 보라색 균열과 청록빛',['#24233e','#e5e8fa','#a490e5','#6bc1cd','#795a99'],'2','https://store.steampowered.com/app/1607890/Risk_of_Rain_2__Survivors_of_the_Void/'),
-    rorSeeker:rainPalette('시커 · Seeker','금빛 의복 · 청록색 영혼과 붉은 천',['#e8d7bf','#47352e','#317f7b','#9b4a46','#aa8b60'],'2','https://store.steampowered.com/app/2306620/Risk_of_Rain_2_Seekers_of_the_Storm/'),
-    rorFalseSon:rainPalette('폴스 선 · False Son','청회색 석체 · 금빛 장갑과 푸른 달빛',['#313943','#ece7d2','#d1b661','#97bcd4','#8c8872'],'2','https://store.steampowered.com/app/2306620/Risk_of_Rain_2_Seekers_of_the_Storm/'),
+    rorVoidFiend:rainPalette('공허 악마 · Void Fiend','보라색 공허 지면 · 밝은 균열과 청록빛',['#44305f','#eee8f5','#c2a2ec','#7bd2cf','#8f70ad'],'2','https://store.steampowered.com/app/1607890/Risk_of_Rain_2__Survivors_of_the_Void/'),
+    rorSeeker:rainPalette('시커 · Seeker','살구빛 연노랑 의복 지면 · 청록색 영혼과 붉은 천',['#f4dfa9','#47352e','#26726f','#934641','#b49260'],'2','https://store.steampowered.com/app/2306620/Risk_of_Rain_2_Seekers_of_the_Storm/'),
+    rorFalseSon:rainPalette('거짓된 자손 · False Son','청회색 석체 · 금빛 장갑과 푸른 달빛',['#313943','#ece7d2','#d1b661','#97bcd4','#8c8872'],'2','https://store.steampowered.com/app/2306620/Risk_of_Rain_2_Seekers_of_the_Storm/'),
     rorOperator:rainPalette('오퍼레이터 · Operator','밝은 금속 머리 · 청록색 기계와 녹색 눈',['#dbe8ec','#253846','#236f88','#516f2b','#667789'],'2','https://store.steampowered.com/app/2781620/Risk_of_Rain_2_Alloyed_Collective/'),
-    rorDrifter:rainPalette('드리프터 · Drifter','황금빛 후드 · 푸른 배낭과 갈색 끈',['#f3d990','#263849','#245eac','#996024','#8594b0'],'2','https://store.steampowered.com/app/2781620/Risk_of_Rain_2_Alloyed_Collective/'),
+    rorDrifter:rainPalette('드리프터 · Drifter','주황빛 노란 후드 지면 · 푸른 배낭과 갈색 끈',['#edba61','#263849','#245eac','#704419','#9c7850'],'2','https://store.steampowered.com/app/2781620/Risk_of_Rain_2_Alloyed_Collective/'),
     rorAcolyte:rainPalette('애콜라이트 · Acolyte','흰 가면 · 붉은 옷과 연두색 눈, 보라색 장식',['#f0ede8','#453b42','#b04752','#54742c','#947e9f'],'2','https://store.steampowered.com/app/3055670/Risk_of_Rain_2_Hallowed_Concepts/'),
     rorProvidence:rainPalette('프로비던스 · Providence','붉은 망토 · 밝은 갑옷과 청록색 검',['#eeeae3','#292931','#b24550','#337f94','#a18b65'],'보스 · 1','https://store.steampowered.com/app/248820/Risk_of_Rain/'),
-    rorMithrix:rainPalette('미스릭스 · Mithrix','차가운 청회색 · 푸른 망치와 달빛 보라',['#28394b','#e0e8ef','#88bddd','#b3acc8','#71929a'],'보스 · 2')
+    rorMithrix:rainPalette('미스락스 · Mithrix','차가운 청회색 · 푸른 망치와 달빛 보라',['#28394b','#e0e8ef','#88bddd','#b3acc8','#71929a'],'보스 · 2')
   });
   const THEMES={};
   THEMES.white={bg:'#ffffff',ink:'#333333',muted:'#727272',line:'#b5b5b5',quote:'#ededed',quoteLine:'#c4c4c4',accent:'#555555',thoughtAccent:'#222222'};
