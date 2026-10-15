@@ -2206,6 +2206,8 @@
   // Compare a lighter export guard with the exact Gramophone Noir colors.
   PALETTES.darkTest1={...PALETTES.dark,name:'테스트 팔레트 1',note:'그라모폰 누아르 색상 · 글자색 보호 배경 0.1%',colors:[...PALETTES.dark.colors],arcaGuardOpacity:.001};
   THEMES.darkTest1={...THEMES.dark};
+  PALETTES.darkTest2={...PALETTES.scarlet,name:'테스트 팔레트 2',note:'블랙 & 레드 색상 · 글자색 보호 배경 0.1%',colors:[...PALETTES.scarlet.colors],arcaGuardOpacity:.001};
+  THEMES.darkTest2={...THEMES.scarlet};
   // Keep the established lead groups; order the remaining cards by playable release.
   const STAR_RAIL_LEAD=['hsrTrailblazer','hsrMarch7th','hsrDanHeng','hsrHimeko','hsrWelt','hsrSunday','hsrSeele','hsrAcheron','hsrSilverWolf','hsrKafka','hsrBlade','hsrFirefly'];
   function paletteEntries(category){
