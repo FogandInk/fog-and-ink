@@ -568,7 +568,7 @@ $('reading-btn').addEventListener('click',()=>{const active=document.body.classL
 $('credits-btn').addEventListener('click',()=>$('credits-dialog').showModal());$('guide-btn').addEventListener('click',()=>$('guide-dialog').showModal());document.querySelectorAll('.dialog-close').forEach(b=>b.addEventListener('click',()=>b.closest('dialog').close()));document.querySelectorAll('dialog').forEach(d=>d.addEventListener('click',e=>{if(e.target===d){const r=d.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)d.close()}}));
 function getExportHTML(options={}){
   const t=theme(draft.paper,draft.transparentInk,draft);
-  return FogRisuExportImages.render(arcaDarkModeHTML(buildExportHTML(options),t.bg));
+  return FogRisuExportImages.render(arcaDarkModeHTML(buildExportHTML(options),t.bg,FogLogic.PALETTES[draft.paper]?.arcaGuardOpacity));
 }
 function buildExportHTML(options={}){
   const t=theme(draft.paper,draft.transparentInk,draft),characterSpacing=FogLogic.characterContentSpacing(draft),serif="'Noto Serif KR',Batang,'Times New Roman',serif",english="'Times New Roman',Georgia,serif";
