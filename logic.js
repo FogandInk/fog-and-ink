@@ -2232,6 +2232,8 @@
     return THEMES[paper]||THEMES.ivory;
   }
   function arcaDarkModeHTML(html,background){
+    // Transparent paper follows the destination board's native color handling.
+    if(background==='transparent')return html;
     const guard='rgba(0,0,0,0.004)';
     // Arca checks each element against the page, including bright panels on dark paper.
     const surface=value=>{
