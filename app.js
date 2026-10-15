@@ -15,6 +15,7 @@ function normalizeDraft(value){
   if(!value||typeof value!=='object'||Array.isArray(value))throw new Error('잘못된 초안');
   const d={...DEFAULTS};
   for(const key of Object.keys(DEFAULTS)){if(typeof DEFAULTS[key]==='string'&&typeof value[key]==='string')d[key]=value[key];if(typeof DEFAULTS[key]==='boolean'&&typeof value[key]==='boolean')d[key]=value[key];}
+  d.paper=({darkTest1:'dark',darkTest2:'scarlet'})[d.paper]||d.paper;
   d.musicPanelColorMode=['original','bg','ink','accent','thought','line','custom'].includes(d.musicPanelColorMode)?d.musicPanelColorMode:'original';d.musicPanelColor=FogLogic.colorHex(d.musicPanelColor,'');
   d.musicPanelOpacity=Math.round(characterImageValue(value.musicPanelOpacity,0,100,DEFAULTS.musicPanelOpacity));
   d.authorName=d.authorName.replace(/\s+/g,' ').trim().slice(0,60);
@@ -568,7 +569,7 @@ $('reading-btn').addEventListener('click',()=>{const active=document.body.classL
 $('credits-btn').addEventListener('click',()=>$('credits-dialog').showModal());$('guide-btn').addEventListener('click',()=>$('guide-dialog').showModal());document.querySelectorAll('.dialog-close').forEach(b=>b.addEventListener('click',()=>b.closest('dialog').close()));document.querySelectorAll('dialog').forEach(d=>d.addEventListener('click',e=>{if(e.target===d){const r=d.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)d.close()}}));
 function getExportHTML(options={}){
   const t=theme(draft.paper,draft.transparentInk,draft);
-  return FogRisuExportImages.render(arcaDarkModeHTML(buildExportHTML(options),t.bg,FogLogic.PALETTES[draft.paper]?.arcaGuardOpacity));
+  return FogRisuExportImages.render(arcaDarkModeHTML(buildExportHTML(options),t.bg));
 }
 function buildExportHTML(options={}){
   const t=theme(draft.paper,draft.transparentInk,draft),characterSpacing=FogLogic.characterContentSpacing(draft),serif="'Noto Serif KR',Batang,'Times New Roman',serif",english="'Times New Roman',Georgia,serif";
