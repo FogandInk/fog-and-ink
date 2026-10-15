@@ -15,7 +15,7 @@
   <script defer src="logic.js?v=20261015-transparent-unguarded"></script>
   <script defer src="export-images.js"></script>
   <script defer src="clipboard.js"></script>
-  <script defer src="app.js?v=20261014-rain-credits"></script>
+  <script defer src="app.js?v=20261015-diary-image-controls"></script>
 </head>
 <body>
   <header class="app-header">
@@ -50,7 +50,7 @@
             <div id="diary-photo-size-settings" hidden><label for="diary-photo-scale">사진 크기 · 폭 고정 <span id="diary-photo-scale-value">80%</span></label><input id="diary-photo-scale" type="range" min="30" max="100" step="1" value="80"><p class="field-hint">가로 폭은 유지하고 사진의 세로 크기를 줄입니다.</p></div>
             <label class="check-label"><input id="image-limit" type="checkbox" checked> 최대 높이 직접 조절</label><div id="image-height-setting" hidden><div id="image-height-controls"><label for="image-height">이미지 최대 높이 <span id="image-height-value">400px</span></label><input id="image-height" type="range" min="100" max="400" step="10" value="400"><p class="field-hint">타입 A·C는 최대 400px입니다. 가로 폭을 유지하고 넘치는 부분을 자릅니다.</p></div></div>
           </div></details>
-          <details class="image-control-group" id="image-position-group"><summary><strong>위치</strong><span aria-hidden="true">＋</span></summary><div class="image-field-group">
+          <details class="image-control-group" id="image-position-group"><summary><strong>위치</strong><span aria-hidden="true">＋</span></summary><div class="image-field-group" id="image-position-fields">
             <label for="image-position-x">이미지 가로 위치 <span id="image-position-x-value">50%</span></label><input id="image-position-x" type="range" min="0" max="100" step="1" value="50"><div class="image-position-labels" aria-hidden="true"><span>왼쪽</span><span>가운데</span><span>오른쪽</span></div>
             <label for="image-position">이미지 세로 위치 <span id="image-position-value">50%</span></label><input id="image-position" type="range" min="0" max="100" step="1" value="50"><div class="image-position-labels" aria-hidden="true"><span>위</span><span>가운데</span><span>아래</span></div><p class="field-hint">확대한 사진에서 보일 부분을 조절하세요.</p>
           </div></details>
