@@ -46,7 +46,7 @@ function normalizeDraft(value){
   d.lineHeight=value.lineHeight==null||!Number.isFinite(Number(value.lineHeight))?DEFAULTS.lineHeight:Math.max(1.6,Math.min(3.2,Math.round(Number(value.lineHeight)*10)/10));
   d.fontSize=Math.max(13,Math.min(20,Number(value.fontSize)||DEFAULTS.fontSize));d.paperWidth=Math.max(650,Math.min(900,Number(value.paperWidth)||DEFAULTS.paperWidth));d.paperPadding=value.paperPadding==null?DEFAULTS.paperPadding:Math.max(0,Math.min(40,Number(value.paperPadding)||0));
   d.videoHeight=Math.max(80,Math.min(600,Math.round((Number(value.videoHeight)||360)/10)*10));
-  d.imageHeight=Math.max(100,Math.min(550,Math.round((Number(value.imageHeight)||400)/10)*10));
+  d.imageHeight=Math.max(100,Math.min(450,Math.round((Number(value.imageHeight)||400)/10)*10));
   d.newsImageZoom=characterImageValue(value.newsImageZoom,100,300,100);d.newsImageX=characterImageValue(value.newsImageX,0,100,50);
   d.musicCoverZoom=characterImageValue(value.musicCoverZoom,100,300,100);
   d.musicCoverX=characterImageValue(value.musicCoverX,0,100,50);
@@ -480,7 +480,7 @@ function render(){
   $('image-limit').closest('label').hidden=squareCover;$('image-height-controls').hidden=squareCover;$('image-height-setting').hidden=squareCover||!draft.imageLimited;
   document.querySelector('label[for="image-zoom"]').firstChild.textContent=(squareCover?'앨범 커버 확대':'이미지 확대')+' ';
   $('music-zoom-control').querySelector('.field-hint').textContent='사진 틀은 유지하고 안쪽 이미지를 100–300%로 확대합니다. 위치는 아래에서 조절하세요.';
-  const imageHeightCap=diaryCover?550:400,imageHeight=Math.min(imageHeightCap,draft.imageHeight);
+  const imageHeightCap=diaryCover?450:400,imageHeight=Math.min(imageHeightCap,draft.imageHeight);
   $('image-height').max=imageHeightCap;$('image-height').value=imageHeight;$('image-height-value').textContent=imageHeight+'px';
   $('image-position-value').textContent=draft.imagePosition+'%';$('image-rule-settings-toggle').closest('label').hidden=squareCover||diaryCover;$('image-rule-settings').hidden=squareCover||diaryCover||!$('image-rule-settings-toggle').checked;$('image-rule-value').textContent=draft.imageRuleWidth+'px';const imageRule=document.querySelector('.image-rule');imageRule.hidden=squareCover||diaryCover||draft.imageRuleWidth===0;imageRule.style.borderTopWidth=draft.imageRuleWidth+'px';imageRule.style.borderTopColor=imageRuleColor(t,draft.imageRuleColor);
   const src=backgroundSource(),cached=backgroundImages.get(src);if(cached?.status==='ready')draft.imageRatio=cached.ratio;
