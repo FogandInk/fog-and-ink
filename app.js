@@ -176,20 +176,26 @@ function cleanupBatchPlan(){
   const results=selectedCleanupTargets().map(target=>{const before=target.owner[target.key],result=FogLogic.applyCleanupRules(before,draft.cleanupRules);return {...target,before,after:result.text,count:result.count,stats:result.stats};});
   return {enabled,results,changes:results.filter(result=>result.before!==result.after),count:results.reduce((sum,result)=>sum+result.count,0)};
 }
+const cleanupRuleMedia=window.matchMedia('(max-width:600px)');
+let cleanupRulePage=0,cleanupRulePageSize=cleanupRuleMedia.matches?4:16;
+cleanupRuleMedia.addEventListener('change',()=>{const first=cleanupRulePage*cleanupRulePageSize;cleanupRulePageSize=cleanupRuleMedia.matches?4:16;cleanupRulePage=Math.floor(first/cleanupRulePageSize);refreshSavedCleanupRules();});
 function refreshSavedCleanupRules(){
   const plan=cleanupBatchPlan(),rules=draft.cleanupRules,list=$('cleanup-rules');
   const counts=rules.map((_,index)=>plan.results.reduce((sum,result)=>sum+(result.stats[index]?.count||0),0));
   const incomplete=rules.map((_,index)=>plan.results.some(result=>result.stats[index]?.unclosed));
-  const signature=JSON.stringify([rules,counts,incomplete]);
+  const pages=Math.max(1,Math.ceil(rules.length/cleanupRulePageSize));cleanupRulePage=Math.min(cleanupRulePage,pages-1);
+  const first=cleanupRulePage*cleanupRulePageSize,last=Math.min(first+cleanupRulePageSize,rules.length);
+  const signature=JSON.stringify([rules,counts,incomplete,cleanupRulePage,cleanupRulePageSize]);
   if(list.dataset.signature!==signature){
-    list.innerHTML=rules.map((rule,index)=>{
+    list.innerHTML=rules.slice(first,last).map((rule,offset)=>{const index=first+offset;
       const name={replace:'단어 치환',delete:'단어 삭제',tags:'태그 구간 제거'}[rule.action];
       const detail=rule.action==='tags'?rule.start+' … '+rule.end:rule.action==='replace'?rule.find+' → '+(rule.replace||'(빈 글자)'):rule.find;
-      return `<li data-rule-index="${index}" class="saved-rule${rule.enabled?'':' is-disabled'}"><label class="saved-rule-toggle"><input type="checkbox" data-rule-enable aria-label="규칙 ${index+1} 사용" ${rule.enabled?'checked':''}><span><strong>${index+1}. ${name}</strong><span class="saved-rule-detail">${escapeHTML(detail)}</span></span></label><div class="saved-rule-controls"><span class="saved-rule-matches">${counts[index]}${rule.action==='tags'?'개 구간':'곳'}${incomplete[index]?' · 미완료 구간 유지':''}</span><button type="button" data-rule-action="up" aria-label="규칙 ${index+1} 위로" ${index===0?'disabled':''}>↑</button><button type="button" data-rule-action="down" aria-label="규칙 ${index+1} 아래로" ${index===rules.length-1?'disabled':''}>↓</button><button type="button" data-rule-action="remove" aria-label="규칙 ${index+1} 삭제">삭제</button></div></li>`;
+      return `<li data-rule-index="${index}" class="saved-rule${rule.enabled?'':' is-disabled'}"><label class="saved-rule-toggle"><input type="checkbox" data-rule-enable aria-label="규칙 ${index+1} 사용" ${rule.enabled?'checked':''}><span><strong>${index+1}. ${name}</strong><span class="saved-rule-detail" title="${escapeHTML(detail)}">${escapeHTML(detail)}</span></span></label><div class="saved-rule-controls"><span class="saved-rule-matches" title="${incomplete[index]?'미완료 구간 유지':''}">${counts[index]}${rule.action==='tags'?'개 구간':'곳'}${incomplete[index]?' · 미완료 구간 유지':''}</span><button type="button" data-rule-action="up" aria-label="규칙 ${index+1} 위로" ${index===0?'disabled':''}>↑</button><button type="button" data-rule-action="down" aria-label="규칙 ${index+1} 아래로" ${index===rules.length-1?'disabled':''}>↓</button><button type="button" data-rule-action="remove" aria-label="규칙 ${index+1} 삭제">삭제</button></div></li>`;
     }).join('');list.dataset.signature=signature;
   }
   $('cleanup-rule-count').textContent=String(rules.length);$('cleanup-rules-empty').hidden=rules.length>0;
-  $('cleanup-batch-apply').disabled=!plan.enabled||!plan.changes.length;
+  list.start=first+1;$('cleanup-rules-pagination').hidden=pages<=1;$('cleanup-rules-prev').disabled=cleanupRulePage===0;$('cleanup-rules-next').disabled=cleanupRulePage===pages-1;$('cleanup-rules-page').textContent=(cleanupRulePage+1)+' / '+pages+' 페이지';
+  for(const id of ['cleanup-batch-apply','cleanup-batch-apply-editor'])$(id).disabled=!plan.enabled||!plan.changes.length;
   $('cleanup-batch-result').textContent=!rules.length?'':!plan.enabled?'적용할 규칙을 체크하세요.':!plan.changes.length?'선택한 규칙으로 변경할 내용이 없습니다.':plan.enabled+'개 규칙 · 일치 '+plan.count+'건 · '+plan.changes.length+'개 글을 변경합니다.';
 }
 function cleanupUndoAvailable(){
@@ -216,7 +222,7 @@ for(const action of ['replace','delete','tags'])$('cleanup-'+action+'-apply').ad
 });
 for(const action of ['replace','delete','tags'])$('cleanup-'+action+'-save').addEventListener('click',()=>{
   const rule=FogLogic.normalizeCleanupRules([cleanupFieldRule(action)])[0];if(!rule)return;
-  draft.cleanupRules.push(rule);refreshCleanupUI();saveDraft();toast('규칙을 저장했어요.');
+  draft.cleanupRules.push(rule);cleanupRulePage=Math.floor((draft.cleanupRules.length-1)/cleanupRulePageSize);refreshCleanupUI();saveDraft();toast('규칙을 저장했어요.');
 });
 $('cleanup-rules').addEventListener('change',event=>{
   if(!event.target.matches('[data-rule-enable]'))return;const index=Number(event.target.closest('[data-rule-index]').dataset.ruleIndex);
@@ -225,15 +231,17 @@ $('cleanup-rules').addEventListener('change',event=>{
 $('cleanup-rules').addEventListener('click',event=>{
   const button=event.target.closest('[data-rule-action]');if(!button)return;
   const index=Number(button.closest('[data-rule-index]').dataset.ruleIndex),action=button.dataset.ruleAction,next=index+(action==='up'?-1:1);
-  if(action==='remove')draft.cleanupRules.splice(index,1);else if(next>=0&&next<draft.cleanupRules.length)[draft.cleanupRules[index],draft.cleanupRules[next]]=[draft.cleanupRules[next],draft.cleanupRules[index]];
+  if(action==='remove')draft.cleanupRules.splice(index,1);else if(next>=0&&next<draft.cleanupRules.length){[draft.cleanupRules[index],draft.cleanupRules[next]]=[draft.cleanupRules[next],draft.cleanupRules[index]];cleanupRulePage=Math.floor(next/cleanupRulePageSize);}
   refreshCleanupUI();saveDraft();
 });
-$('cleanup-batch-apply').addEventListener('click',()=>{
+for(const [id,step]of [['cleanup-rules-prev',-1],['cleanup-rules-next',1]])$(id).addEventListener('click',()=>{cleanupRulePage=Math.max(0,cleanupRulePage+step);refreshSavedCleanupRules();});
+function applySavedCleanupRules(){
   finishPreviewEdit();const plan=cleanupBatchPlan();if(!plan.enabled||!plan.changes.length)return;
   lastCleanup=plan.changes;for(const change of lastCleanup)change.owner[change.key]=change.after;
   populate();saveDraft();const message=plan.enabled+'개 규칙으로 '+plan.changes.length+'개 글을 정리했어요. (일치 '+plan.count+'건)';
   $('cleanup-result').textContent=message;$('cleanup-result').hidden=false;toast(message);
-});
+}
+for(const id of ['cleanup-batch-apply','cleanup-batch-apply-editor'])$(id).addEventListener('click',applySavedCleanupRules);
 $('cleanup-undo').addEventListener('click',()=>{
   if(!cleanupUndoAvailable())return;for(const change of lastCleanup)change.owner[change.key]=change.before;
   lastCleanup=null;populate();saveDraft();$('cleanup-result').textContent='방금 정리한 내용을 되돌렸어요.';$('cleanup-result').hidden=false;notifyCleanup('방금 정리한 내용을 되돌렸어요.');
