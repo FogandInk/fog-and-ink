@@ -2472,7 +2472,8 @@
   }
   function coverPhotoSettings(options={}){
     const square=options.layoutType==='music',diary=options.layoutType==='diary',news=!square&&!diary,imageRatio=characterImageValue(options.imageRatio,.05,20,1.5),scale=diary?characterImageValue(options.diaryPhotoScale??options.diaryPhotoWidth,30,100,80)/100:1,ratio=square?1:imageRatio/scale;
-    return {square,padding:Math.round(10000/ratio)/100,maxHeight:!square?Math.round((options.imageLimited?characterImageValue(options.imageHeight,100,400,400):400)*scale)+'px':'none',background:backgroundPhotoStyle(options.image,characterImageValue(news?options.newsImageX:options.musicCoverX,0,100,50),characterImageValue(options.imagePosition,0,100,50),characterImageValue(news?options.newsImageZoom:options.musicCoverZoom,100,300,100),imageRatio,ratio)};
+    const heightCap=diary?550:400;
+    return {square,padding:Math.round(10000/ratio)/100,maxHeight:!square?Math.round((options.imageLimited?characterImageValue(options.imageHeight,100,heightCap,400):heightCap)*scale)+'px':'none',background:backgroundPhotoStyle(options.image,characterImageValue(news?options.newsImageX:options.musicCoverX,0,100,50),characterImageValue(options.imagePosition,0,100,50),characterImageValue(news?options.newsImageZoom:options.musicCoverZoom,100,300,100),imageRatio,ratio)};
   }
   function coverPhotoHTML(image,options={}){
     const s=coverPhotoSettings({...options,image});
