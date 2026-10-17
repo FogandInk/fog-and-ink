@@ -413,9 +413,9 @@ function renderMusicLayout(t){
   document.querySelector('#comment-static .comment-heading h3').textContent='Comment';$('comment-collapse').querySelector('strong').textContent='Comment';
   $('comment-section').style.cssText='';$('comment-section').style.borderTop='3px double '+t.line;
   const storySection=document.querySelector('.story-section');storySection.style.borderTop='1px solid '+t.line;storySection.style.borderBottom='1px solid '+t.line;storySection.style.marginTop=(characterSpacing.hasCharacters?characterSpacing.storyMarginTop:music?FogLogic.musicContentSpacing(draft).storyMarginTop:draft.layoutType==='news'?FogLogic.newsContentSpacing(draft).storyMarginTop:30)+'px';storySection.style.paddingTop=draft.bodyFold?'0':'20px';storySection.style.paddingBottom=draft.bodyFold?'0':'20px';
-  const headingStyle=chapterTitleStyle(t);
-  $('chapter-view').style.cssText=headingStyle+'margin:0 0 24px;';$('chapter-collapse-view').style.cssText=headingStyle;
-  $('body-collapse').querySelector('summary').style.cssText='cursor:pointer;padding:18px 0;'+headingStyle;
+  const headingStyle=chapterTitleStyle(t),foldHeadingStyle=chapterTitleStyle(t,true);
+  $('chapter-view').style.cssText=headingStyle+'margin:0 0 24px;';$('chapter-collapse-view').style.cssText=foldHeadingStyle;
+  $('body-collapse').querySelector('summary').style.cssText='cursor:pointer;padding:18px 0;'+foldHeadingStyle;
   document.querySelector('#comment-static .comment-heading h3').style.cssText=music?headingStyle+'margin:8px 0 0;':'';
   $('comment-collapse').querySelector('summary').style.cssText=music?'cursor:pointer;padding:20px 0;'+headingStyle:'';
   $('comment-collapse').querySelector('strong').style.cssText=music?headingStyle:'';
@@ -614,7 +614,7 @@ function buildExportHTML(options={}){
   const characters=charactersHTML(options.characters||draft.characters,t,characterFontSettings(draft).key,false,characterFontSettings(draft));
   const modelRows=[['Main Model',draft.mainModel],['Sub Model',draft.secondaryModel],['Prompt',draft.prompt]];const models=modelRows.some(([,v])=>v.trim())?`<div style="display:block;width:100%;margin:22px 0 ${characters?characterSpacing.modelMarginBottom:18}px;padding:14px 0;border-top:1px solid ${t.line};border-bottom:1px solid ${t.line};font-size:0;">${modelRows.map(([label,value])=>`<div style="display:inline-block;width:33.333%;vertical-align:top;padding:0 8px;box-sizing:border-box;text-align:center;font-family:Arial,sans-serif;font-size:11px;line-height:1.9;color:${t.ink};overflow-wrap:anywhere;"><strong style="font-family:Arial,sans-serif;font-size:11px;font-style:normal;font-weight:bold!important;color:${t.accent};display:block;text-align:center;margin:0;white-space:nowrap;">${label}</strong><span style="display:block;text-align:center;white-space:pre-line;">${lineHTML(value.trim()||'—')}</span></div>`).join('')}</div>`:'';
   const body=bodyHTML(draft.body,t,draft.fontSize,draft.highlightDialogue,draft.bodyFont,draft.quoteBackground,draft.dividerStyle,draft);const chapter=p(chapterTitleStyle(t),lineHTML(draft.chapter||'이야기'));
-  const storyContent=draft.bodyFold?`<details style="display:block;border:0;margin:0;padding:0;"><summary style="cursor:pointer;padding:18px 0;${chapterTitleStyle(t)}">${lineHTML(draft.chapter||'이야기')}</summary><div style="margin-top:16px;">${body}</div></details>`:`${draft.chapter.trim()?`<div style="margin:0 0 25px;">${chapter}</div>`:''}${body}`;
+  const storyContent=draft.bodyFold?`<details style="display:block;border:0;margin:0;padding:0;"><summary style="cursor:pointer;padding:18px 0;${chapterTitleStyle(t,true)}">${lineHTML(draft.chapter||'이야기')}</summary><div style="margin-top:16px;">${body}</div></details>`:`${draft.chapter.trim()?`<div style="margin:0 0 25px;">${chapter}</div>`:''}${body}`;
   const storyMarginTop=characterSpacing.hasCharacters?characterSpacing.storyMarginTop:draft.layoutType==='diary'?14:draft.layoutType==='music'?FogLogic.musicContentSpacing(draft).storyMarginTop:FogLogic.newsContentSpacing(draft).storyMarginTop;
   const story=sectionRuleHTML(t,storyMarginTop+'px 0 '+(draft.bodyFold?'0':'20px'))+storyContent+sectionRuleHTML(t,'0');
   const commentContent=commentHTML(draft.comment,t,draft.commentAlign,draft.bodyFont,draft.dividerStyle,draft.customDivider);
@@ -686,14 +686,14 @@ $('body-editor-card').addEventListener('click',event=>{
   const button=event.target.closest('[data-body-move]');if(!button)return;
   event.preventDefault();moveBody(0,button.dataset.bodyMove==='up'?-1:1);
 });
-function chapterTitleStyle(t){
+function chapterTitleStyle(t,fold=false){
   if(draft.layoutType==='diary')return 'font-family:'+bodyFont(draft.bodyFont)+';font-size:18px;font-weight:400;font-style:normal;line-height:1.8;color:'+t.ink+';margin:0;';
   if(draft.layoutType==='music')return "font-family:Arial,sans-serif;font-size:20px;font-weight:600;font-style:normal;line-height:1.5;letter-spacing:-.4px;color:"+t.ink+';margin:0;overflow-wrap:anywhere;';
-  return "font-family:'Times New Roman',Georgia,serif;font-size:25px;font-weight:400;font-style:italic;line-height:1.5;letter-spacing:normal;color:"+t.ink+';margin:0;overflow-wrap:anywhere;';
+  return "font-family:'Times New Roman',Georgia,serif;font-size:25px;font-weight:400;font-style:"+(fold&&draft.layoutType==='cinema'?'normal':'italic')+";line-height:1.5;letter-spacing:normal;color:"+t.ink+';margin:0;overflow-wrap:anywhere;';
 }
 function sectionHTML(section,index,t,publish=false){
   const content=bodyHTML(section.body,t,draft.fontSize,draft.highlightDialogue,draft.bodyFont,draft.quoteBackground,draft.dividerStyle,draft),title=lineHTML(section.title||'본문 '+(index+2));
-  const titleStyle=chapterTitleStyle(t);
+  const titleStyle=chapterTitleStyle(t,section.fold);
 
   return sectionRuleHTML(t)+(section.fold?'<details class="paper-fold extra-fold" data-index="'+index+'" '+(!publish&&section.open?'open':'')+' style="display:block;border:0;margin:0;padding:0;"><summary style="cursor:pointer;padding:18px 0;'+titleStyle+'">'+title+'</summary><div class="story-body" style="margin-top:16px;padding-bottom:18px;">'+content+'</div></details>':'<section class="extra-story" style="margin:18px 0 0;"><h3 class="chapter-heading" style="'+titleStyle+'margin-bottom:25px;">'+title+'</h3><div class="story-body">'+content+'</div></section>')+sectionRuleHTML(t,'0');
 }
