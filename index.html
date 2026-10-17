@@ -12,10 +12,10 @@
   <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,400;6..96,500;6..96,600;6..96,700&family=DM+Sans:wght@400;500;600&family=Noto+Serif+KR:wght@400;500;600;700;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard-dynamic-subset.min.css">
   <link rel="stylesheet" href="style.css?v=20261017-cinema-width">
-  <script defer src="logic.js?v=20261017-cinema-masthead"></script>
+  <script defer src="logic.js?v=20261017-cinema-side"></script>
   <script defer src="export-images.js"></script>
   <script defer src="clipboard.js"></script>
-  <script defer src="app.js?v=20261017-cinema-upright"></script>
+  <script defer src="app.js?v=20261017-cinema-side"></script>
 </head>
 <body>
   <header class="app-header">
@@ -48,7 +48,7 @@
           <details class="image-control-group" id="image-size-group" open><summary><strong>크기·확대·위치</strong><span aria-hidden="true">＋</span></summary><div class="image-field-group">
             <div id="music-zoom-control"><label for="image-zoom">이미지 확대 <span id="image-zoom-value">100%</span></label><input id="image-zoom" type="range" min="100" max="300" step="5" value="100"><p class="field-hint">사진 틀을 유지하고 안쪽 이미지만 확대합니다.</p></div>
             <div id="diary-photo-size-settings" hidden><label for="diary-photo-scale">사진 크기 · 폭 고정 <span id="diary-photo-scale-value">80%</span></label><input id="diary-photo-scale" type="range" min="30" max="100" step="1" value="80"><p class="field-hint">가로 폭은 유지하고 사진의 세로 크기를 줄입니다.</p></div>
-            <div id="cinema-width-setting" hidden><label for="cinema-poster-width">포스터 폭 <span id="cinema-poster-width-value">267px</span></label><input id="cinema-poster-width" type="range" min="100" max="450" step="1" value="267"><p class="field-hint">100–450px. 높이와 별도로 조절합니다. 좁은 지면에서는 사진이 아래로 배치됩니다.</p></div>
+            <div id="cinema-width-setting" hidden><label for="cinema-poster-side">포스터 배치</label><select id="cinema-poster-side"><option value="right">오른쪽</option><option value="left">왼쪽</option></select><label for="cinema-poster-width">포스터 폭 <span id="cinema-poster-width-value">267px</span></label><input id="cinema-poster-width" type="range" min="100" max="450" step="1" value="267"><p class="field-hint">100–450px. 높이와 별도로 조절합니다. 좁은 지면에서는 선택한 순서대로 세로 배치됩니다.</p></div>
             <label class="check-label"><input id="image-limit" type="checkbox" checked> 최대 높이 직접 조절</label><div id="image-height-setting" hidden><div id="image-height-controls"><label for="image-height">이미지 최대 높이 <span id="image-height-value">400px</span></label><input id="image-height" type="range" min="100" max="400" step="10" value="400"><p class="field-hint">타입 A는 최대 400px, 타입 C·D는 최대 450px입니다. 가로 폭을 유지하고 넘치는 부분을 자릅니다.</p></div></div>
           </div></details>
           <details class="image-control-group" id="image-position-group"><summary><strong>위치</strong><span aria-hidden="true">＋</span></summary><div class="image-field-group" id="image-position-fields">
