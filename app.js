@@ -447,7 +447,7 @@ function renderCinemaLayout(t){
   hero.append(track,$('image-frame'));track.append($('subtitle-view'),$('film-synopsis-view'),$('tags-view'));
   $('film-synopsis-view').textContent=draft.filmSynopsis;$('film-synopsis-view').hidden=!draft.filmSynopsis.trim();
   for(const [element,key] of [[hero,'hero'],[$('image-frame'),'art'],[track,'track'],[$('story-label-view'),'label'],[$('title-view'),'title'],[$('subtitle-view'),'subtitle'],[$('film-synopsis-view'),'synopsis'],[$('tags-view'),'tags']])element.style.cssText=s[key];
-  for(const tag of $('tags-view').children)tag.style.cssText=s.tag;
+  for(const tag of $('tags-view').children){tag.style.cssText=s.tag;tag.textContent='#'+tag.textContent;}
   sheet.style.borderRadius='0';sheet.style.backgroundImage='none';$('layout-preview-type').textContent='TYPE D · CINEMA';
   document.querySelector('.paper-header').after($('video-section'));$('video-section').after(hero);
   document.querySelector('label[for="image-url"]').firstChild.textContent='포스터 이미지 주소 ';
