@@ -2084,7 +2084,7 @@
   function characterContentSpacing(draft={}){
     const hasCharacters=(Array.isArray(draft.characters)?draft.characters:[]).some(character=>character&&(String(character.name||'').trim()||String(character.description||'').trim()||safeImageURL(character.image||'')));
     const hasModels=[draft.mainModel,draft.secondaryModel,draft.prompt].some(value=>String(value||'').trim());
-    return {hasCharacters,hasModels,gridMargin:'6px 0 10px',modelMarginBottom:10,storyMarginTop:14,precedingMarginBottom:6};
+    return {hasCharacters,hasModels,gridMargin:'10px 0',modelMarginBottom:10,storyMarginTop:10,precedingMarginBottom:6};
   }
   function newsContentSpacing(draft={}){
     const spacing=characterContentSpacing(draft);
@@ -2513,7 +2513,7 @@
   }
   function charactersHTML(characters,t,font='serif',preview=false,options={}){
     const cards=characters.map((character,index)=>{let html=characterHTML(character,t,font,options);if(preview&&html)html=html.replace('class="character-profile"','class="character-profile" data-character-index="'+index+'"');return html;}).filter(Boolean);if(!cards.length)return '';
-    return `<div class="character-grid" style="display:flex;flex-wrap:wrap;align-items:flex-start;${options.music?'':'gap:0 32px;'}width:100%;min-width:0;margin:${options.gridMargin||'6px 0 10px'};background-color:transparent;">${cards.join('')}</div>`;
+    return `<div class="character-grid" style="display:flex;flex-wrap:wrap;align-items:flex-start;${options.music?'':'gap:0 32px;'}width:100%;min-width:0;margin:${options.gridMargin||'10px 0'};background-color:transparent;">${cards.join('')}</div>`;
   }
   const api={cinemaPosterSize,cinemaStyles,cinemaHeaderStyles,cinemaPageHTML,dialogueBoxColor,dialogueBoxBackground,footerCredit,footerCreditHTML,paperFooterHTML,diaryPhotoFrameColor,coverPhotoSettings,diaryLabelHTML,diaryStyles,diaryHeaderStyles,diaryPageHTML,THEMES,PALETTES,paletteCategory,paletteEntries,DIVIDERS,DIVIDER_MARKER,BODY_FONTS,PRETENDARD_STYLESHEET,bodyFont,characterFontSettings,escapeHTML,layoutCopy,musicPanelBackgroundColor,musicPanelTheme,characterContentSpacing,newsContentSpacing,musicContentSpacing,musicStyles,musicControlsHTML,musicPageHTML,mastheadSettings,paperHeaderStyles,paperHeaderHTML,safeURL,safeImageURL,youtube,theme,arcaDarkModeHTML,colorHex,isDarkColor,contrastRatio,replaceLiteral,removeLiteralRanges,normalizeCleanupRules,applyCleanupRules,blocks,quotes,formatSelectedText,dividerHTML,inlineHTML,dialogueSourceSegments,foldBlocks,bodyHTML,commentHTML,characterImageValue,backgroundPhotoStyle,imageRuleColor,coverPhotoHTML,characterHTML,charactersHTML};root.FogLogic=api;if(typeof module!=='undefined'&&module.exports)module.exports=api;
 })(typeof globalThis!=='undefined'?globalThis:this);

@@ -412,7 +412,7 @@ function renderMusicLayout(t){
   else{hero.after($('subtitle-view'),$('tags-view'));document.querySelector('.paper-header').after($('video-section'));$('music-controls').replaceChildren();}
   document.querySelector('#comment-static .comment-heading h3').textContent='Comment';$('comment-collapse').querySelector('strong').textContent='Comment';
   $('comment-section').style.cssText='';$('comment-section').style.borderTop='3px double '+t.line;
-  const storySection=document.querySelector('.story-section');storySection.style.borderTop='1px solid '+t.line;storySection.style.borderBottom='1px solid '+t.line;storySection.style.marginTop=(music?FogLogic.musicContentSpacing(draft).storyMarginTop:draft.layoutType==='news'?FogLogic.newsContentSpacing(draft).storyMarginTop:30)+'px';storySection.style.paddingTop=draft.bodyFold?'0':'20px';storySection.style.paddingBottom=draft.bodyFold?'0':'20px';
+  const storySection=document.querySelector('.story-section');storySection.style.borderTop='1px solid '+t.line;storySection.style.borderBottom='1px solid '+t.line;storySection.style.marginTop=(characterSpacing.hasCharacters?characterSpacing.storyMarginTop:music?FogLogic.musicContentSpacing(draft).storyMarginTop:draft.layoutType==='news'?FogLogic.newsContentSpacing(draft).storyMarginTop:30)+'px';storySection.style.paddingTop=draft.bodyFold?'0':'20px';storySection.style.paddingBottom=draft.bodyFold?'0':'20px';
   const headingStyle=chapterTitleStyle(t);
   $('chapter-view').style.cssText=headingStyle+'margin:0 0 24px;';$('chapter-collapse-view').style.cssText=headingStyle;
   $('body-collapse').querySelector('summary').style.cssText='cursor:pointer;padding:18px 0;'+headingStyle;
@@ -422,7 +422,7 @@ function renderMusicLayout(t){
 }
 
 function renderDiaryLayout(t){
-  const diary=draft.layoutType==='diary',sheet=$('newspaper'),s=FogLogic.diaryStyles(t,draft);
+  const diary=draft.layoutType==='diary',sheet=$('newspaper'),s=FogLogic.diaryStyles(t,draft),spacing=FogLogic.characterContentSpacing(draft);
   $('diary-photo-settings').hidden=!diary;$('diary-photo-color-settings').hidden=draft.diaryPhotoColorRole!=='custom';$('diary-photo-color-hex').value=draft.diaryPhotoColor.toUpperCase();sheet.classList.toggle('diary-layout',diary);document.querySelector('.paper-footer').hidden=false;
   if(!diary)return;
   $('diary-photo-mount').hidden=!draft.image;$('diary-photo-mount').append($('image-frame'));$('diary-photo-mount').style.cssText=s.photoMount;
@@ -431,7 +431,7 @@ function renderDiaryLayout(t){
   sheet.style.backgroundImage='none';sheet.style.borderRadius='0';$('layout-preview-type').textContent='TYPE C · DIARY';
   for(const [element,key]of [[$('hero'),'hero'],[$('image-frame'),'art'],[document.querySelector('.headline-block'),'track'],[$('story-label-view'),'label'],[$('title-view'),'title'],[$('subtitle-view'),'subtitle'],[$('tags-view'),'tags']])element.style.cssText=s[key];
   $('chapter-view').style.cssText=chapterTitleStyle(t)+'margin:0 0 18px;';$('body-collapse').querySelector('summary').style.cssText=chapterTitleStyle(t)+'padding:18px 0;';
-  const section=document.querySelector('.story-section');section.style.borderTop='1px solid '+t.line;section.style.borderBottom='1px solid '+t.line;section.style.marginTop='14px';section.style.paddingTop=draft.bodyFold?'0':'20px';section.style.paddingBottom=draft.bodyFold?'0':'20px';
+  const section=document.querySelector('.story-section');section.style.borderTop='1px solid '+t.line;section.style.borderBottom='1px solid '+t.line;section.style.marginTop=(spacing.hasCharacters?spacing.storyMarginTop:14)+'px';section.style.paddingTop=draft.bodyFold?'0':'20px';section.style.paddingBottom=draft.bodyFold?'0':'20px';
   $('comment-section').style.cssText='border:0;border-top:3px double '+t.line+';margin:36px 0 0;padding:0;';
   document.querySelector('#comment-static .comment-heading h3').style.cssText=chapterTitleStyle(t)+'margin:0;';
   $('comment-collapse').querySelector('summary').style.cssText=chapterTitleStyle(t)+'padding:20px 0;';$('comment-collapse').querySelector('strong').style.cssText=chapterTitleStyle(t);
@@ -615,7 +615,7 @@ function buildExportHTML(options={}){
   const modelRows=[['Main Model',draft.mainModel],['Sub Model',draft.secondaryModel],['Prompt',draft.prompt]];const models=modelRows.some(([,v])=>v.trim())?`<div style="display:block;width:100%;margin:22px 0 ${characters?characterSpacing.modelMarginBottom:18}px;padding:14px 0;border-top:1px solid ${t.line};border-bottom:1px solid ${t.line};font-size:0;">${modelRows.map(([label,value])=>`<div style="display:inline-block;width:33.333%;vertical-align:top;padding:0 8px;box-sizing:border-box;text-align:center;font-family:Arial,sans-serif;font-size:11px;line-height:1.9;color:${t.ink};overflow-wrap:anywhere;"><strong style="font-family:Arial,sans-serif;font-size:11px;font-style:normal;font-weight:bold!important;color:${t.accent};display:block;text-align:center;margin:0;white-space:nowrap;">${label}</strong><span style="display:block;text-align:center;white-space:pre-line;">${lineHTML(value.trim()||'—')}</span></div>`).join('')}</div>`:'';
   const body=bodyHTML(draft.body,t,draft.fontSize,draft.highlightDialogue,draft.bodyFont,draft.quoteBackground,draft.dividerStyle,draft);const chapter=p(chapterTitleStyle(t),lineHTML(draft.chapter||'이야기'));
   const storyContent=draft.bodyFold?`<details style="display:block;border:0;margin:0;padding:0;"><summary style="cursor:pointer;padding:18px 0;${chapterTitleStyle(t)}">${lineHTML(draft.chapter||'이야기')}</summary><div style="margin-top:16px;">${body}</div></details>`:`${draft.chapter.trim()?`<div style="margin:0 0 25px;">${chapter}</div>`:''}${body}`;
-  const storyMarginTop=draft.layoutType==='diary'?14:draft.layoutType==='music'?FogLogic.musicContentSpacing(draft).storyMarginTop:FogLogic.newsContentSpacing(draft).storyMarginTop;
+  const storyMarginTop=characterSpacing.hasCharacters?characterSpacing.storyMarginTop:draft.layoutType==='diary'?14:draft.layoutType==='music'?FogLogic.musicContentSpacing(draft).storyMarginTop:FogLogic.newsContentSpacing(draft).storyMarginTop;
   const story=sectionRuleHTML(t,storyMarginTop+'px 0 '+(draft.bodyFold?'0':'20px'))+storyContent+sectionRuleHTML(t,'0');
   const commentContent=commentHTML(draft.comment,t,draft.commentAlign,draft.bodyFont,draft.dividerStyle,draft.customDivider);
   const comment=draft.commentEnabled&&draft.comment.trim()?`<div style="border:0;border-top:3px double ${t.line};margin:36px 0 0;padding:0;">${draft.commentFold?`<details style="display:block;border:0;padding:0;"><summary style="cursor:pointer;padding:20px 0;color:${t.ink};${draft.layoutType==='music'?chapterTitleStyle(t):'font-size:19px;font-family:'+serif+';'}">Comment</summary><div style="padding:0 0 20px;">${commentContent}</div></details>`:`<div style="padding:22px 0;">${p(little,'FROM THE MARGIN')}${p(draft.layoutType==='music'?chapterTitleStyle(t)+'margin:9px 0 18px;':`font-family:${serif};font-size:20px;color:${t.ink};margin:9px 0 18px;`,'Comment')}${commentContent}</div>`}</div>`:'';
