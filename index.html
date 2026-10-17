@@ -11,11 +11,11 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,400;6..96,500;6..96,600;6..96,700&family=DM+Sans:wght@400;500;600&family=Noto+Serif+KR:wght@400;500;600;700;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard-dynamic-subset.min.css">
-  <link rel="stylesheet" href="style.css?v=20261016-rule-cards">
-  <script defer src="logic.js?v=20261016-c-height450"></script>
+  <link rel="stylesheet" href="style.css?v=20261017-cinema">
+  <script defer src="logic.js?v=20261017-cinema"></script>
   <script defer src="export-images.js"></script>
   <script defer src="clipboard.js"></script>
-  <script defer src="app.js?v=20261016-c-height450"></script>
+  <script defer src="app.js?v=20261017-cinema"></script>
 </head>
 <body>
   <header class="app-header">
@@ -28,7 +28,7 @@
       <div class="editor-intro"><span class="eyebrow">THE PRINT ROOM</span><h1>이야기를 지면으로.</h1><p>한 장의 그림, 오래 남을 이야기.</p><a class="mobile-jump" href="#newspaper">지면으로 돌아가기 ↑</a></div>
       <div class="save-status"><span class="status-dot"></span><span id="save-status" role="status">이 브라우저에 자동 저장</span></div>
       <form id="editor-form">
-        <div class="layout-picker"><label for="layout-type">지면 타입</label><select id="layout-type"><option value="news">타입 A · 뉴스</option><option value="music">타입 B · 뮤직 플레이어</option><option value="diary">타입 C · 다이어리</option></select></div>
+        <div class="layout-picker"><label for="layout-type">지면 타입</label><select id="layout-type"><option value="news">타입 A · 뉴스</option><option value="music">타입 B · 뮤직 플레이어</option><option value="diary">타입 C · 다이어리</option><option value="cinema">타입 D · 시네마</option></select></div>
         <details open><summary><span><b>01</b> 장면 연출</span><span class="expand">+</span></summary><div class="field-group">
           <label class="check-label"><input id="youtube-settings-toggle" type="checkbox" aria-controls="youtube-settings" aria-expanded="false"> 유튜브 설정 펼치기</label>
           <div id="youtube-settings" class="youtube-settings" hidden>
@@ -48,7 +48,7 @@
           <details class="image-control-group" id="image-size-group" open><summary><strong>크기·확대·위치</strong><span aria-hidden="true">＋</span></summary><div class="image-field-group">
             <div id="music-zoom-control"><label for="image-zoom">이미지 확대 <span id="image-zoom-value">100%</span></label><input id="image-zoom" type="range" min="100" max="300" step="5" value="100"><p class="field-hint">사진 틀을 유지하고 안쪽 이미지만 확대합니다.</p></div>
             <div id="diary-photo-size-settings" hidden><label for="diary-photo-scale">사진 크기 · 폭 고정 <span id="diary-photo-scale-value">80%</span></label><input id="diary-photo-scale" type="range" min="30" max="100" step="1" value="80"><p class="field-hint">가로 폭은 유지하고 사진의 세로 크기를 줄입니다.</p></div>
-            <label class="check-label"><input id="image-limit" type="checkbox" checked> 최대 높이 직접 조절</label><div id="image-height-setting" hidden><div id="image-height-controls"><label for="image-height">이미지 최대 높이 <span id="image-height-value">400px</span></label><input id="image-height" type="range" min="100" max="400" step="10" value="400"><p class="field-hint">타입 A는 최대 400px, 타입 C는 최대 450px입니다. 가로 폭을 유지하고 넘치는 부분을 자릅니다.</p></div></div>
+            <label class="check-label"><input id="image-limit" type="checkbox" checked> 최대 높이 직접 조절</label><div id="image-height-setting" hidden><div id="image-height-controls"><label for="image-height">이미지 최대 높이 <span id="image-height-value">400px</span></label><input id="image-height" type="range" min="100" max="400" step="10" value="400"><p class="field-hint">타입 A는 최대 400px, 타입 C·D는 최대 450px입니다. 가로 폭을 유지하고 넘치는 부분을 자릅니다.</p></div></div>
           </div></details>
           <details class="image-control-group" id="image-position-group"><summary><strong>위치</strong><span aria-hidden="true">＋</span></summary><div class="image-field-group" id="image-position-fields">
             <label for="image-position-x">이미지 가로 위치 <span id="image-position-x-value">50%</span></label><input id="image-position-x" type="range" min="0" max="100" step="1" value="50"><div class="image-position-labels" aria-hidden="true"><span>왼쪽</span><span>가운데</span><span>오른쪽</span></div>
@@ -81,6 +81,7 @@
           <label for="story-label">제목 위 문구</label><input id="story-label" maxlength="150" placeholder="THE LONDON CHRONICLES"><p class="field-hint">비워 두면 문구를 표시하지 않습니다.</p>
           <label for="title">제목</label><textarea id="title" rows="2" maxlength="150"></textarea><label for="title-size">제목 폰트 크기 <span id="title-size-value">48px</span></label><input id="title-size" type="range" min="20" max="160" step="1" value="48"><p class="field-hint">20–160px. 슬라이더로 조절하세요.</p>
           <label for="subtitle">부제목</label><textarea id="subtitle" rows="2" maxlength="300"></textarea>
+          <div id="film-synopsis-setting" hidden><label for="film-synopsis">작품 설명문</label><textarea id="film-synopsis" rows="5" maxlength="2000" placeholder="영화의 줄거리처럼, 이 이야기의 분위기와 내용을 소개해 주세요."></textarea><p class="field-hint">타입 D에서만 제목 옆 소개 영역에 표시합니다. 비워 두면 숨깁니다.</p></div>
           <label for="tags">태그</label><input id="tags" placeholder="태그를 쉼표로 구분해 주세요"><p class="field-hint">쉼표로 구분하면 각각 표시됩니다.</p>
           <label for="body-font">본문 글꼴</label><select id="body-font"><option value="serif">명조 · 기본 serif</option><option value="sans">고딕 · 기본 sans-serif</option><option value="mono">고정폭 · 기본 monospace</option><option value="pretendard">프리텐다드</option></select><p class="field-hint">프리텐다드는 웹폰트로 표시됩니다. 붙여넣는 게시판이 이 글꼴을 지원하지 않으면 기본 고딕으로 표시됩니다.</p><label for="line-height">본문 행간 <span id="line-height-value">1.9배</span></label><input id="line-height" type="range" min="1.6" max="3.2" step="0.1" value="1.9"><p class="field-hint">글자 크기의 1.6–3.2배로 조절합니다.</p><label for="font-size">본문 글자 크기 <span id="font-value">14px</span></label><input id="font-size" type="range" min="13" max="20" value="14"><p class="field-hint">13–20px 범위에서 조절할 수 있어요.</p>
           <label for="author-name">사용자 이름</label><input id="author-name" maxlength="60" placeholder="작성자 이름"><p class="field-hint">입력하면 지면 맨 아래에 FOG &amp; INK | AUTHOR · 이름으로 표시합니다.</p>
@@ -108,7 +109,7 @@
         <header class="paper-header"><div class="paper-kicker"><span>AN INDEPENDENT JOURNAL</span><span>STORIES WORTH KEEPING</span></div><div class="masthead" id="paper-name-view">FOG & INK</div><div class="paper-motto">A CHRONICLE OF MOMENTS, REAL & IMAGINED.</div><div class="folio"><span id="issue-view">VOL. I — NO. 001</span><span id="location-view">LONDON</span><span id="date-view">NOVEMBER, 1880</span></div></header>
         <section class="video-section" id="video-section" hidden><div class="video-player" id="video-player"></div><div id="video-link" class="video-link"><span>♫ &nbsp; LISTEN TO THE SCENE</span></div></section>
         <div class="hero" id="hero"><div id="diary-photo-mount" hidden></div><div class="image-frame" id="image-frame"><div class="cover-photo" id="cover-image" role="img" aria-label="로그 표지 그림"><div id="cover-spacer" aria-hidden="true"></div></div><div class="image-rule" aria-hidden="true"></div></div><div class="headline-block"><span class="story-label" id="story-label-view">THE LONDON CHRONICLES</span><h2 id="title-view">자정의 교정쇄</h2><div class="headline-decoration" aria-hidden="true"><span></span>✦<span></span></div><div id="music-controls" hidden></div></div></div>
-        <div id="diary-subtitle-row" hidden></div><p class="subtitle" id="subtitle-view"></p><div class="tag-row" id="tags-view"></div><div class="model-info" id="model-info" hidden></div><section id="characters-view" hidden aria-label="캐릭터 소개"></section>
+        <p id="film-synopsis-view" hidden></p><div id="diary-subtitle-row" hidden></div><p class="subtitle" id="subtitle-view"></p><div class="tag-row" id="tags-view"></div><div class="model-info" id="model-info" hidden></div><section id="characters-view" hidden aria-label="캐릭터 소개"></section>
         <section class="story-section"><div id="body-static"><h3 class="chapter-heading" id="chapter-view">Chapter I.</h3><div class="story-body" id="body-view"></div></div><details class="paper-fold" id="body-collapse" hidden><summary><span class="chapter-heading" id="chapter-collapse-view">Chapter I.</span><span class="fold-sign" aria-hidden="true"></span></summary></details></section>
         <div id="additional-bodies"></div>
         <section class="comment-section" id="comment-section"><div class="comment-static" id="comment-static"><div class="comment-heading"><span class="eyebrow">FROM THE MARGIN</span><h3>Comment</h3></div><div id="comment-content"><div id="comment-view"></div></div></div><details class="paper-fold comment-fold" id="comment-collapse"><summary><span><small>FROM THE MARGIN</small><strong>Comment</strong></span><span class="fold-sign" aria-hidden="true"></span></summary></details></section>
