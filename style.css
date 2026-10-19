@@ -168,3 +168,5 @@ label[for="main-model"],label[for="secondary-model"],label[for="prompt"]{font-we
 .cinema-layout .headline-decoration{display:none}.cinema-layout .headline-block{align-items:flex-start}.cinema-layout .tag-row span::before{content:none}.cinema-layout #film-synopsis-view{box-sizing:border-box;width:100%}.cinema-layout .paper-header{margin:0;padding:0;border:0}.cinema-layout .cover-photo{border-radius:0!important}
 
 .cinema-layout .video-link{border:0!important}
+
+.character-editor>summary .character-editor-title{flex:1;min-width:0}.character-editor-actions{display:inline-flex;align-items:center;gap:4px;flex-shrink:0}.character-editor>summary .character-editor-actions button{min-height:28px;padding:3px 6px}.character-editor-actions [data-character-move]{min-width:28px;font-size:13px}

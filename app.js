@@ -722,7 +722,8 @@ function populateCharacters(){
   const container=$('character-editors');container.replaceChildren();
   draft.characters.forEach((character,index)=>{
     const panel=document.createElement('details');panel.className='character-editor';panel.dataset.characterIndex=index;panel.open=index===0||openCharacterEditors.has(character);
-    panel.innerHTML='<summary><span class="character-editor-title"></span><button type="button" data-character-remove aria-label="캐릭터 '+(index+1)+' 삭제">삭제</button></summary><div class="field-group"><div class="character-name-row"><div><label for="character-role-'+index+'">유형</label><select id="character-role-'+index+'" data-character-field="role"><option value="char">CHAR</option><option value="user">USER</option><option value="none">없음</option></select></div><div><label for="character-name-'+index+'">이름</label><input id="character-name-'+index+'" data-character-field="name" maxlength="150" placeholder="이름"></div></div><label for="character-description-'+index+'">설명</label><textarea id="character-description-'+index+'" data-character-field="description" rows="4" placeholder="캐릭터를 소개해 주세요."></textarea><label for="character-image-'+index+'">이미지 주소</label><input id="character-image-'+index+'" data-character-field="image" inputmode="url" placeholder="// 또는 https:// 이미지 주소"><p class="field-hint" data-image-hint hidden></p></div>';
+    panel.innerHTML='<summary><span class="character-editor-title"></span><span class="character-editor-actions"><button type="button" data-character-move="up" aria-label="캐릭터 '+(index+1)+' 위로 이동">↑</button><button type="button" data-character-move="down" aria-label="캐릭터 '+(index+1)+' 아래로 이동">↓</button><button type="button" data-character-remove aria-label="캐릭터 '+(index+1)+' 삭제">삭제</button></span></summary><div class="field-group"><div class="character-name-row"><div><label for="character-role-'+index+'">유형</label><select id="character-role-'+index+'" data-character-field="role"><option value="char">CHAR</option><option value="user">USER</option><option value="none">없음</option></select></div><div><label for="character-name-'+index+'">이름</label><input id="character-name-'+index+'" data-character-field="name" maxlength="150" placeholder="이름"></div></div><label for="character-description-'+index+'">설명</label><textarea id="character-description-'+index+'" data-character-field="description" rows="4" placeholder="캐릭터를 소개해 주세요."></textarea><label for="character-image-'+index+'">이미지 주소</label><input id="character-image-'+index+'" data-character-field="image" inputmode="url" placeholder="// 또는 https:// 이미지 주소"><p class="field-hint" data-image-hint hidden></p></div>';
+    panel.querySelector('[data-character-move="up"]').disabled=index===0;panel.querySelector('[data-character-move="down"]').disabled=index===draft.characters.length-1;
     const cropControls=document.createElement('div');cropControls.className='character-image-controls';
     cropControls.innerHTML='<label for="character-imageShape-'+index+'">사진 모양</label><select id="character-imageShape-'+index+'" data-character-field="imageShape"><option value="square">정사각형 · 1:1</option><option value="portrait">긴 세로형 · 2:3</option></select>'+[['imageX','사진 X 위치',0,100,1],['imageY','사진 Y 위치',0,100,1],['imageZoom','사진 확대',100,300,5]].map(([key,label,min,max,step])=>'<div class="range-label"><label for="character-'+key+'-'+index+'">'+label+'</label><output data-character-output="'+key+'" for="character-'+key+'-'+index+'"></output></div><input type="range" id="character-'+key+'-'+index+'" data-character-field="'+key+'" min="'+min+'" max="'+max+'" step="'+step+'">').join('')+'<p class="field-hint">선택한 사진 틀 안에서 좌우·위아래로 옮기고 100–300%로 확대합니다.</p>';
     panel.querySelector('.field-group').appendChild(cropControls);
@@ -731,6 +732,17 @@ function populateCharacters(){
     panel.addEventListener('toggle',()=>{if(panel.open)openCharacterEditors.add(character);else openCharacterEditors.delete(character)});
     container.appendChild(panel);
   });
+}
+function moveCharacter(index,direction){
+  const target=index+direction;if(!Number.isInteger(index)||![-1,1].includes(direction)||index<0||index>=draft.characters.length||target<0||target>=draft.characters.length)return;
+  finishPreviewEdit();
+  const opened=new Set([...$('character-editors').querySelectorAll('[data-character-index]')].filter(panel=>panel.open).map(panel=>draft.characters[Number(panel.dataset.characterIndex)]));
+  const [character]=draft.characters.splice(index,1);draft.characters.splice(target,0,character);
+  populateCharacters();
+  for(const panel of $('character-editors').querySelectorAll('[data-character-index]'))panel.open=opened.has(draft.characters[Number(panel.dataset.characterIndex)]);
+  render();saveDraft();
+  const panel=$('character-editors').querySelector('[data-character-index="'+target+'"]'),button=panel.querySelector('[data-character-move="'+(direction<0?'up':'down')+'"]');
+  (button.disabled?panel.querySelector('summary'):button).focus();
 }
 function updateCharacter(input,canonicalize=false){
   const panel=input.closest('[data-character-index]'),key=input.dataset.characterField;if(!panel||!key)return;
@@ -746,7 +758,7 @@ function updateCharacter(input,canonicalize=false){
 }
 $('character-editors').addEventListener('input',event=>updateCharacter(event.target));
 $('character-editors').addEventListener('change',event=>{if(event.target.dataset.characterField==='image')updateCharacter(event.target,true)});
-$('character-editors').addEventListener('click',event=>{const button=event.target.closest('[data-character-remove]');if(!button)return;event.preventDefault();const index=Number(button.closest('[data-character-index]').dataset.characterIndex),character=draft.characters[index];if((character.name.trim()||character.description.trim()||character.image)&&!confirm('이 캐릭터 설명을 삭제할까요?'))return;draft.characters.splice(index,1);populateCharacters();render();saveDraft();});
+$('character-editors').addEventListener('click',event=>{const button=event.target.closest('[data-character-remove],[data-character-move]');if(!button)return;event.preventDefault();const index=Number(button.closest('[data-character-index]').dataset.characterIndex);if(button.dataset.characterMove){moveCharacter(index,button.dataset.characterMove==='up'?-1:1);return;}const character=draft.characters[index];if((character.name.trim()||character.description.trim()||character.image)&&!confirm('이 캐릭터 설명을 삭제할까요?'))return;draft.characters.splice(index,1);populateCharacters();render();saveDraft();});
 $('add-character').addEventListener('click',()=>{const character={role:'none',name:'',description:'',image:'',imageX:50,imageY:50,imageZoom:100,imageShape:'square',imageRatio:1};draft.characters.push(character);openCharacterEditors.add(character);populateCharacters();render();saveDraft();$('character-name-'+(draft.characters.length-1)).focus();});
 
 const previewFields={
