@@ -191,3 +191,11 @@ body.editor-desktop[data-editor-theme=dark]{--ink:#f5f5f5;--muted:#adadad;--line
 .editor-desktop :is(#transparent-settings,#custom-settings)>.field-hint:last-child{margin:8px 0 0}
 .editor-desktop #palette-settings>.field-group{padding-bottom:12px}
 @media(max-width:600px){.editor-desktop .palette-series>summary{min-height:44px;padding-top:12px;padding-bottom:12px}.editor-desktop .credits-entry button{min-height:40px}}
+/* Give revealed settings breathing room without spreading the closed rows. */
+.editor-desktop #inspector-panel-scene>details:first-of-type>.field-group>:is(.youtube-settings,.scene-settings):not([hidden]){padding:8px 0}
+.editor-desktop #image-hint{margin-bottom:0}
+.editor-desktop #image-settings>.mini-actions{padding-top:8px}
+.editor-desktop :is(#video-height-setting,#diary-photo-color-settings,#film-synopsis-setting){margin-top:16px}
+.editor-desktop #custom-palette-surface{margin-bottom:16px}
+.editor-desktop #youtube-settings #video-height-setting>.field-hint:last-child{margin-bottom:0}
+.editor-desktop #risu-image-status:empty{margin:0}
