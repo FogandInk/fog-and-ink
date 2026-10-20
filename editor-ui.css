@@ -202,3 +202,15 @@ body.editor-desktop[data-editor-theme=dark]{--ink:#f5f5f5;--muted:#adadad;--line
 .editor-desktop #youtube-hint{margin-bottom:0}
 .editor-desktop .editor label[for=video-style]{margin-top:16px}
 .editor-desktop #credits-dialog .credits-resources{display:grid;gap:16px}
+/* Keep chapter folding separate from clicking its editable title. */
+.editor-desktop .preview-chapter-row{display:flex;align-items:baseline;gap:6px}
+.editor-desktop .preview-chapter-row>.chapter-heading{flex:1;min-width:0}
+.editor-desktop #newspaper .preview-chapter-summary{display:flex;align-items:center;justify-content:flex-start;gap:6px;list-style:none}
+.editor-desktop #newspaper .preview-chapter-summary::marker{content:''}
+.editor-desktop #newspaper .preview-chapter-summary::-webkit-details-marker{display:none}
+.editor-desktop .preview-chapter-summary>[data-preview-key]{flex:1;min-width:0}
+.editor-desktop #newspaper .preview-chapter-toggle{display:inline-flex;align-items:center;justify-content:center;flex:0 0 28px;width:28px;height:32px;padding:4px;border:0;border-radius:2px;background:transparent;color:var(--paper-ink);cursor:pointer;vertical-align:middle}
+.editor-desktop .preview-chapter-toggle svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:1.5;transition:transform .12s}
+.editor-desktop .preview-chapter-toggle[aria-expanded=true] svg{transform:rotate(90deg)}
+.editor-desktop #newspaper .preview-chapter-toggle:hover{background:color-mix(in srgb,var(--paper-ink) 8%,transparent)}
+.editor-desktop #newspaper .preview-chapter-toggle:focus-visible{outline:1px solid var(--paper-muted);outline-offset:2px}
