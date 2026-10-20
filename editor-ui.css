@@ -171,3 +171,8 @@ body.editor-desktop[data-editor-theme=dark]{--ink:#f5f5f5;--muted:#adadad;--line
 .editor-desktop #inspector-panel-scene>details:first-of-type>.field-group{padding:6px 0}
 .editor-desktop #inspector-panel-scene>details:first-of-type>.field-group>.check-label{margin:0;min-height:36px;padding:6px 0;line-height:24px;align-items:center}
 @media(max-width:600px){.editor-desktop #inspector-panel-scene>details:first-of-type>.field-group>.check-label{min-height:40px;padding:8px 0}}
+
+.editor-desktop #prompt{resize:none}
+.editor-desktop .editor .character-image-controls{margin-top:16px}
+.editor-desktop .editor .character-image-controls>.field-hint{margin-bottom:4px}
+.editor-desktop .editor .risu-portrait-status{margin-bottom:0}

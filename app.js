@@ -66,8 +66,7 @@ const clearedBodyCopies=new WeakMap();
 try{const saved=localStorage.getItem(STORAGE_KEY);if(saved)draft=normalizeDraft(JSON.parse(saved))}catch{}
 function setEditorTheme(dark){document.body.dataset.editorTheme=dark?'dark':'light';$('editor-theme-btn').setAttribute('aria-pressed',String(dark));$('editor-theme-btn').querySelector('.theme-label').textContent=dark?'편집기 라이트 모드':'편집기 다크 모드';try{localStorage.setItem(UI_STORAGE_KEY,dark?'dark':'light')}catch{}}
 let initialEditorDark=false;try{initialEditorDark=localStorage.getItem(UI_STORAGE_KEY)==='dark'}catch{}setEditorTheme(initialEditorDark);
-if(draft.paper==='transparent'&&!draft.transparentCustomColors)draft.transparentInk=initialEditorDark?'light':'dark';
-$('editor-theme-btn').addEventListener('click',()=>{setEditorTheme(document.body.dataset.editorTheme!=='dark');if(draft.paper==='transparent'&&!draft.transparentCustomColors){draft.transparentInk=document.body.dataset.editorTheme==='dark'?'light':'dark';$('transparent-ink').value=draft.transparentInk;}render();saveDraft();});
+$('editor-theme-btn').addEventListener('click',()=>{setEditorTheme(document.body.dataset.editorTheme!=='dark');render();saveDraft();});
 for(const group of ['youtube','image','image-rule']){
   const toggle=$(group+'-settings-toggle'),panel=$(group+'-settings'),storageKey='fog-and-ink-'+group+'-settings-open';
   const apply=open=>{toggle.checked=open;toggle.setAttribute('aria-expanded',String(open));panel.hidden=!open;};
@@ -282,7 +281,6 @@ function renderPalettePicker(){
 }
 function selectPalette(key,category=FogLogic.paletteCategory(key)){
   draft.paper=key;activePaletteCategory=category;
-  if(key==='transparent'&&!draft.transparentCustomColors){draft.transparentInk=document.body.dataset.editorTheme==='dark'?'light':'dark';$('transparent-ink').value=draft.transparentInk;}
   render();saveDraft();
 }
 $('palette-category-switch').querySelectorAll('button').forEach(button=>button.addEventListener('click',()=>{
@@ -524,7 +522,7 @@ for(const[id,storedKey]of Object.entries(fields))$(id).addEventListener('input',
     $('body-font').value=draft.bodyFont;
   }
   if(key==='bodyFont')draft[draft.layoutType==='diary'?'diaryBodyFont':'standardBodyFont']=draft.bodyFont;
-  if(key==='transparentInk')draft.transparentCustomColors=false;if(key==='paper'&&draft.paper==='transparent'&&!draft.transparentCustomColors){draft.transparentInk=document.body.dataset.editorTheme==='dark'?'light':'dark';$('transparent-ink').value=draft.transparentInk;}render();saveDraft()});
+  if(key==='transparentInk')draft.transparentCustomColors=false;render();saveDraft()});
 for(const key of ['bg','ink','accent','thought','line'])$('custom-'+key+'-hex').addEventListener('input',()=>{const input=$('custom-'+key+'-hex'),raw=input.value.trim(),value=raw.startsWith('#')?raw:'#'+raw;if(!/^#[a-f0-9]{6}$/i.test(value)){input.setAttribute('aria-invalid','true');return;}input.removeAttribute('aria-invalid');draft[fields['custom-'+key]]=value.toLowerCase();$('custom-'+key).value=value;render();saveDraft();});
 
 
