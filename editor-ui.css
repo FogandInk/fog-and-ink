@@ -56,7 +56,9 @@ body.editor-desktop[data-editor-theme=dark]{--ink:#f5f5f5;--muted:#adadad;--line
 .ui-footer-label{margin:0 0 10px;font-size:11px;color:var(--muted)}
 .editor-desktop .editor-footer>button{font-size:12px;padding:9px 10px;min-height:36px;border:1px solid var(--line);border-radius:2px;width:100%;background:var(--ui-panel)}
 .editor-desktop .footer-links{justify-content:space-between;margin-top:10px}.editor-desktop .footer-links button{font-size:11px;min-height:30px;padding:4px 0}
-.editor-desktop .credits-entry{justify-content:flex-start;margin:12px 0 0}.editor-desktop .credits-entry button{font-size:10px;letter-spacing:1px;min-height:30px;padding:6px 0;border:0}
+.editor-desktop .credits-entry{justify-content:center;margin:12px 0 0}.editor-desktop .credits-entry button{font-size:10px;letter-spacing:1px;min-height:36px;padding:8px 14px;border:1px solid var(--line);border-radius:0;background:var(--ui-panel);color:var(--muted);text-align:center}
+.editor-desktop .credits-entry button:hover{background:var(--ui-note);color:var(--ink);border-color:var(--muted)}
+.editor-desktop .credits-entry button:focus-visible{outline:2px solid var(--muted);outline-offset:3px}
 .editor-desktop .workspace-nav{top:60px;min-height:52px;padding:0 28px;scroll-margin-top:60px;background:var(--ui-panel)}
 .editor-desktop .workspace-tabs{gap:26px}.editor-desktop .workspace-tabs button{padding:17px 0 14px;font-size:13px;border-bottom-width:2px}
 .editor-desktop .workspace-save-note{font-size:11px}
@@ -90,7 +92,7 @@ body.editor-desktop[data-editor-theme=dark]{--ink:#f5f5f5;--muted:#adadad;--line
 .editor-desktop .character-editor>.field-group{padding:2px 12px 16px}
 .editor-desktop .character-name-row{gap:10px}
 .editor-desktop .add-character-btn{width:100%;min-height:36px;font-size:12px;border:1px solid var(--line);border-radius:2px;padding:8px}
-.ui-side-picker{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:0 0 12px}
+.ui-side-picker{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:0}
 .ui-side-picker button{font-size:12px;border:1px solid var(--line);border-radius:2px;min-height:36px}
 .ui-side-picker button[aria-pressed=true]{background:var(--ui-note);border-color:var(--muted);font-weight:600}
 .editor-desktop .palette-category-switch{gap:6px;margin:16px 0}
@@ -102,7 +104,10 @@ body.editor-desktop[data-editor-theme=dark]{--ink:#f5f5f5;--muted:#adadad;--line
 .editor-desktop .palette-card-name{font-size:11px;line-height:1.6;margin-top:6px}
 .editor-desktop .palette-card-sample{font-size:12px;min-height:40px;padding:9px 4px}
 .editor-desktop .palette-gallery-heading{font-size:12px;letter-spacing:0}
-.editor-desktop .palette-series{border-radius:2px}.editor-desktop .palette-series>summary{font-size:12px;min-height:42px;padding:12px 10px}
+.editor-desktop .palette-series{border-radius:2px}.editor-desktop .palette-series>summary{font-size:12px;min-height:40px;padding:10px 12px;line-height:20px;gap:8px}
+.editor-desktop #character-palette-gallery>.palette-gallery{row-gap:0}
+.editor-desktop .palette-series-count{font-size:10px;line-height:20px}
+.editor-desktop .palette-series-toggle{display:inline-flex;align-items:center;justify-content:center;flex:0 0 16px;width:16px;height:20px;line-height:1}
 .ui-search-status{margin:7px 0 0;font-size:11px;line-height:1.7;color:var(--muted)}
 .ui-search-miss{display:none!important}
 .editor-desktop :is(.manuscript-panel,dialog) :is(button,input,textarea,select){font-family:var(--editor-font);border-radius:2px}
@@ -176,3 +181,13 @@ body.editor-desktop[data-editor-theme=dark]{--ink:#f5f5f5;--muted:#adadad;--line
 .editor-desktop .editor .character-image-controls{margin-top:16px}
 .editor-desktop .editor .character-image-controls>.field-hint{margin-bottom:4px}
 .editor-desktop .editor .risu-portrait-status{margin-bottom:0}
+/* Adjacent image groups use one shared vertical gap after being combined. */
+.editor-desktop .editor .image-control-group>.image-field-group:not(:last-child){padding-bottom:0}
+.editor-desktop .editor .image-control-group>.image-field-group+.image-field-group{padding-top:0}
+.editor-desktop .editor .image-field-group>div:first-child>label:first-child{margin-top:0}
+.editor-desktop .editor .image-field-group .field-hint{margin:8px 0 16px}
+.editor-desktop .editor .image-field-group>.field-hint:last-child{margin-bottom:0}
+.editor-desktop .editor .image-field-group :is(.ui-side-picker,.image-position-labels)+label{margin-top:16px}
+.editor-desktop :is(#transparent-settings,#custom-settings)>.field-hint:last-child{margin:8px 0 0}
+.editor-desktop #palette-settings>.field-group{padding-bottom:12px}
+@media(max-width:600px){.editor-desktop .palette-series>summary{min-height:44px;padding-top:12px;padding-bottom:12px}.editor-desktop .credits-entry button{min-height:40px}}
