@@ -1,6 +1,6 @@
 /* The editor has its own visual system. Never target publication descendants here. */
 body.editor-desktop{--ink:#171717;--muted:#737373;--line:#dedede;--ui-bg:#f5f5f5;--ui-panel:#fff;--ui-header:#fff;--ui-input:#fff;--ui-accent:#171717;--ui-accent-ink:#fff;--ui-note:#ededed;--editor-font:Pretendard,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-family:var(--editor-font)}
-body.editor-desktop[data-editor-theme=dark]{--ink:#f5f5f5;--muted:#a3a3a3;--line:#333333;--ui-bg:#090909;--ui-panel:#111111;--ui-header:#111111;--ui-input:#0c0c0c;--ui-accent:#ededed;--ui-accent-ink:#111111;--ui-note:#222222}
+body.editor-desktop[data-editor-theme=dark]{--ink:#f5f5f5;--muted:#adadad;--line:#3b3b3b;--ui-bg:#171717;--ui-panel:#202020;--ui-header:#202020;--ui-input:#1a1a1a;--ui-accent:#ededed;--ui-accent-ink:#171717;--ui-note:#2c2c2c}
 .editor-desktop :is(.app-header,.editor,.workspace-nav,.preview-toolbar,.manuscript-panel,dialog,.ui-preview-help,.inspector-mobile-toggle){font-family:var(--editor-font);font-size:13px}
 .editor-desktop .app-header{height:60px;min-height:60px;position:sticky;top:0;z-index:10;padding:0 24px;gap:24px}
 .editor-desktop .brand{gap:0}.editor-desktop .brand-mark,.editor-desktop .brand-name small{display:none}
@@ -70,10 +70,14 @@ body.editor-desktop[data-editor-theme=dark]{--ink:#f5f5f5;--muted:#a3a3a3;--line
 .editor-desktop .preview-tools .reading-btn span{display:inline-flex;align-items:center;line-height:1}
 .editor-desktop .preview-tools .mobile-jump{display:none}
 .ui-preview-help{margin:0 0 20px;padding:10px 0 0;border-top:1px solid var(--line);color:var(--muted);font-size:11px}
-.ui-preview-help>summary{display:flex;align-items:center;justify-content:flex-start;gap:6px;min-height:24px;padding:0;font-size:11px;line-height:1.6;list-style:none;cursor:pointer;max-width:max-content}
+.ui-preview-help>summary{display:flex;align-items:center;justify-content:center;gap:6px;min-height:24px;width:max-content;max-width:100%;margin:0 auto;padding:0;font-size:11px;line-height:1.6;list-style:none;cursor:pointer}
 .ui-preview-help>summary::before{content:'▸';display:block;flex:0 0 12px;width:12px;text-align:center;line-height:1}
 .ui-preview-help[open]>summary::before{content:'▾'}
 .ui-preview-help #preview-edit-help{font-size:12px;margin:8px 0 0;padding:0;line-height:1.85;text-align:center}
+.preview-body-popup-heading strong{min-width:0}
+.preview-body-popup-actions{display:flex;align-items:center;gap:6px;flex-shrink:0}
+.preview-body-popup-pin{min-height:28px;padding:4px 8px;border:1px solid var(--line);border-radius:2px;background:var(--ui-panel);font-size:11px;line-height:1.5;white-space:nowrap;color:var(--muted)}
+.preview-body-popup-pin[aria-pressed=true]{background:var(--ui-note);border-color:var(--muted);color:var(--ink)}
 .editor-desktop .character-editor{border:1px solid var(--line);border-radius:2px;margin:12px 0;background:var(--ui-panel)}
 .editor-desktop .character-editor>summary{display:flex;align-items:center;gap:9px;padding:10px;font-size:12px;min-width:0}
 .ui-character-thumb{display:flex;align-items:center;justify-content:center;flex:0 0 30px;width:30px;height:36px;overflow:hidden;background-color:var(--ui-note);background-size:cover;background-position:center;font-size:12px;color:var(--muted)}

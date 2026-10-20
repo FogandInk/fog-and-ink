@@ -952,6 +952,20 @@ function insertDirectBodyDivider(){
   }
   syncDirectBody();rememberDirectBodySelection();toast('구분선을 넣었어요.');
 }
+const BODY_POPUP_POSITION_KEY='fog-and-ink-body-popup-position';
+function readBodyPopupPreference(){
+  try{
+    const value=JSON.parse(localStorage.getItem(BODY_POPUP_POSITION_KEY)||'null');
+    if(value?.pinned===true&&Number.isFinite(value.left)&&Number.isFinite(value.top))return {pinned:true,left:value.left,top:value.top};
+  }catch{}
+  return {pinned:false,left:0,top:0};
+}
+let bodyPopupPreference=readBodyPopupPreference();
+function pinnedBodyPopupPosition(position,size,viewport){
+  const padding=12,minX=viewport.left+padding,minY=viewport.top+padding;
+  const maxX=Math.max(minX,viewport.left+viewport.width-padding-size.width),maxY=Math.max(minY,viewport.top+viewport.height-padding-size.height);
+  return {left:Math.max(minX,Math.min(maxX,position.left)),top:Math.max(minY,Math.min(maxY,position.top))};
+}
 function bodyPopupPosition(anchor,size,viewport){
   const gap=14,padding=12,minX=viewport.left+padding,minY=viewport.top+padding;
   const maxX=Math.max(minX,viewport.left+viewport.width-padding-size.width),maxY=Math.max(minY,viewport.top+viewport.height-padding-size.height);
@@ -965,7 +979,7 @@ function positionBodyPopup(edit){
   const visual=window.visualViewport,viewport={left:visual?.offsetLeft||0,top:visual?.offsetTop||0,width:Math.min(visual?.width||innerWidth,innerWidth),height:Math.min(visual?.height||innerHeight,innerHeight)};
   edit.panel.style.width=Math.min(320,Math.max(1,viewport.width-24))+'px';edit.panel.style.maxHeight=Math.max(1,viewport.height-24)+'px';
   const targetRect=edit.target.getBoundingClientRect(),size=edit.panel.getBoundingClientRect();
-  const anchor={x:targetRect.left+edit.popupOffset.x,y:targetRect.top+edit.popupOffset.y},position=bodyPopupPosition(anchor,size,viewport);
+  const anchor={x:targetRect.left+edit.popupOffset.x,y:targetRect.top+edit.popupOffset.y},position=bodyPopupPreference.pinned?pinnedBodyPopupPosition(bodyPopupPreference,size,viewport):bodyPopupPosition(anchor,size,viewport);
   edit.panel.style.left=position.left+'px';edit.panel.style.top=position.top+'px';
 }
 function startDirectBodyEdit(ref,pointer){
@@ -983,7 +997,17 @@ function startDirectBodyEdit(ref,pointer){
   const panel=document.createElement('div');panel.className='preview-inline-editor preview-body-controls preview-body-popup';panel.id='preview-inline-editor';panel.setAttribute('role','dialog');panel.setAttribute('aria-modal','false');panel.setAttribute('aria-label',ref.index==null?'본문 편집 도구':'본문 '+(ref.index+2)+' 편집 도구');
   const heading=document.createElement('div');heading.className='preview-body-popup-heading';
   const title=document.createElement('strong');title.textContent=ref.index==null?'본문 편집':'본문 '+(ref.index+2)+' 편집';
-  const close=document.createElement('button');close.type='button';close.className='preview-body-popup-close';close.setAttribute('aria-label','본문 편집 도구 닫기');close.textContent='×';close.addEventListener('click',()=>finishPreviewEdit(false,true));heading.append(title,close);
+  const close=document.createElement('button');close.type='button';close.className='preview-body-popup-close';close.setAttribute('aria-label','본문 편집 도구 닫기');close.textContent='×';close.addEventListener('click',()=>finishPreviewEdit(false,true));
+  const popupActions=document.createElement('div');popupActions.className='preview-body-popup-actions';
+  const pin=document.createElement('button');pin.type='button';pin.className='preview-body-popup-pin';pin.setAttribute('aria-label','본문 편집 도구 위치 고정');
+  const refreshPin=()=>{pin.textContent=bodyPopupPreference.pinned?'고정 해제':'위치 고정';pin.setAttribute('aria-pressed',String(bodyPopupPreference.pinned));pin.title=bodyPopupPreference.pinned?'고정을 해제하면 클릭한 본문을 다시 따라갑니다.':'현재 화면 위치에 고정합니다. 다음 본문 편집에도 유지됩니다.';};
+  pin.addEventListener('pointerdown',event=>{rememberDirectBodySelection();event.preventDefault();});
+  pin.addEventListener('click',()=>{
+    const rect=panel.getBoundingClientRect();bodyPopupPreference={pinned:!bodyPopupPreference.pinned,left:rect.left,top:rect.top};
+    try{localStorage.setItem(BODY_POPUP_POSITION_KEY,JSON.stringify(bodyPopupPreference));}catch{}
+    refreshPin();positionBodyPopup(edit);
+  });
+  refreshPin();popupActions.append(pin,close);heading.append(title,popupActions);
   const tools=document.createElement('div');tools.className='preview-edit-actions';
   const insert=document.createElement('button');insert.type='button';insert.className='secondary-btn';insert.textContent='구분선 넣기';insert.dataset.previewInsertDivider='';
   insert.addEventListener('pointerdown',event=>{rememberDirectBodySelection();event.preventDefault();});insert.addEventListener('click',insertDirectBodyDivider);
