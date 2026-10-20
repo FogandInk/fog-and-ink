@@ -198,7 +198,7 @@ function refreshSavedCleanupRules(){
   }
   $('cleanup-rule-count').textContent=String(rules.length);$('cleanup-rules-empty').hidden=rules.length>0;
   list.start=first+1;$('cleanup-rules-pagination').hidden=pages<=1;$('cleanup-rules-prev').disabled=cleanupRulePage===0;$('cleanup-rules-next').disabled=cleanupRulePage===pages-1;$('cleanup-rules-page').textContent=(cleanupRulePage+1)+' / '+pages+' 페이지';
-  for(const id of ['cleanup-batch-apply','cleanup-batch-apply-editor'])$(id).disabled=!plan.enabled||!plan.changes.length;
+  for(const id of ['cleanup-batch-apply','cleanup-batch-apply-editor','cleanup-batch-apply-preview'])$(id).disabled=!plan.enabled||!plan.changes.length;
   $('cleanup-batch-result').textContent=!rules.length?'':!plan.enabled?'적용할 규칙을 체크하세요.':!plan.changes.length?'선택한 규칙으로 변경할 내용이 없습니다.':plan.enabled+'개 규칙 · 일치 '+plan.count+'건 · '+plan.changes.length+'개 글을 변경합니다.';
 }
 function cleanupUndoAvailable(){
@@ -244,7 +244,7 @@ function applySavedCleanupRules(){
   populate();saveDraft();const message=plan.enabled+'개 규칙으로 '+plan.changes.length+'개 글을 정리했어요. (일치 '+plan.count+'건)';
   $('cleanup-result').textContent=message;$('cleanup-result').hidden=false;toast(message);
 }
-for(const id of ['cleanup-batch-apply','cleanup-batch-apply-editor'])$(id).addEventListener('click',applySavedCleanupRules);
+for(const id of ['cleanup-batch-apply','cleanup-batch-apply-editor','cleanup-batch-apply-preview'])$(id).addEventListener('click',applySavedCleanupRules);
 $('cleanup-undo').addEventListener('click',()=>{
   if(!cleanupUndoAvailable())return;for(const change of lastCleanup)change.owner[change.key]=change.before;
   lastCleanup=null;populate();saveDraft();$('cleanup-result').textContent='방금 정리한 내용을 되돌렸어요.';$('cleanup-result').hidden=false;notifyCleanup('방금 정리한 내용을 되돌렸어요.');
@@ -271,8 +271,9 @@ function renderPalettePicker(){
   if(select.dataset.category!==activePaletteCategory){select.replaceChildren(...options.map(({key,label})=>{const option=document.createElement('option');option.value=key;option.textContent=label;return option;}));select.dataset.category=activePaletteCategory;}
   select.value=draft.paper;select.hidden=true;document.querySelector('label[for="paper"]').hidden=true;
   $('palette-category-switch').querySelectorAll('button').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.category===activePaletteCategory)));
-  $('palette-gallery').querySelectorAll('[data-category]').forEach(element=>element.hidden=element.dataset.category!==activePaletteCategory);
-  const characterCategory=activePaletteCategory==='캐릭터 팔레트',customCategory=activePaletteCategory==='커스텀 팔레트',panel=$('palette-gallery-panel'),characterGallery=$('character-palette-gallery'),gallery=$('palette-gallery');
+  const searching=!!$('ui-palette-search')?.value.trim();
+  $('palette-gallery').querySelectorAll('[data-category]').forEach(element=>element.hidden=searching?element.dataset.category==='즐겨찾기 팔레트':element.dataset.category!==activePaletteCategory);
+  const characterCategory=!searching&&activePaletteCategory==='캐릭터 팔레트',customCategory=!searching&&activePaletteCategory==='커스텀 팔레트',panel=$('palette-gallery-panel'),characterGallery=$('character-palette-gallery'),gallery=$('palette-gallery');
   characterGallery.hidden=!characterCategory;panel.hidden=characterCategory||customCategory;panel.open=true;
   $('custom-palette-surface').hidden=!customCategory;$('custom-surface').value=draft.paper==='transparent'?'transparent':'custom';
   document.querySelector('.palette-info').before($('custom-palette-surface'));
@@ -1000,9 +1001,16 @@ function startDirectBodyEdit(ref,pointer){
   const close=document.createElement('button');close.type='button';close.className='preview-body-popup-close';close.setAttribute('aria-label','본문 편집 도구 닫기');close.textContent='×';close.addEventListener('click',()=>finishPreviewEdit(false,true));
   const popupActions=document.createElement('div');popupActions.className='preview-body-popup-actions';
   const pin=document.createElement('button');pin.type='button';pin.className='preview-body-popup-pin';pin.setAttribute('aria-label','본문 편집 도구 위치 고정');
-  const refreshPin=()=>{pin.textContent=bodyPopupPreference.pinned?'고정 해제':'위치 고정';pin.setAttribute('aria-pressed',String(bodyPopupPreference.pinned));pin.title=bodyPopupPreference.pinned?'고정을 해제하면 클릭한 본문을 다시 따라갑니다.':'현재 화면 위치에 고정합니다. 다음 본문 편집에도 유지됩니다.';};
+  const refreshPin=()=>{
+    const pinned=bodyPopupPreference.pinned;pin.textContent=pinned?'고정 해제':'위치 고정';pin.setAttribute('aria-pressed',String(pinned));
+    pin.title=pinned?'제목 줄을 끌어 위치를 옮길 수 있습니다. 고정을 해제하면 클릭한 본문을 다시 따라갑니다.':'현재 화면 위치에 고정합니다. 다음 본문 편집에도 유지됩니다.';
+    panel.classList.toggle('is-position-pinned',pinned);heading.tabIndex=pinned?0:-1;heading.setAttribute('role','group');
+    heading.setAttribute('aria-label',pinned?'본문 편집 도구 이동. 제목 줄을 끌거나 방향키로 이동합니다. Shift와 방향키는 1px씩 이동합니다.':'본문 편집 도구 제목');
+    heading.title=pinned?'드래그 또는 방향키로 이동 · Shift + 방향키로 미세 조절':'';
+  };
   pin.addEventListener('pointerdown',event=>{rememberDirectBodySelection();event.preventDefault();});
   pin.addEventListener('click',()=>{
+    edit.finishPopupDrag();
     const rect=panel.getBoundingClientRect();bodyPopupPreference={pinned:!bodyPopupPreference.pinned,left:rect.left,top:rect.top};
     try{localStorage.setItem(BODY_POPUP_POSITION_KEY,JSON.stringify(bodyPopupPreference));}catch{}
     refreshPin();positionBodyPopup(edit);
@@ -1018,6 +1026,36 @@ function startDirectBodyEdit(ref,pointer){
   document.body.appendChild(panel);
   const rect=target.getBoundingClientRect(),anchor=pointer?{x:pointer.clientX,y:pointer.clientY}:{x:rect.left+Math.min(40,rect.width),y:Math.max(12,Math.min(innerHeight-12,rect.top+20))};
   const edit=activePreviewEdit={kind:'body',ref,original,target,events,panel,originalSize:draft.fontSize,initialHTML:target.innerHTML,popupOffset:{x:anchor.x-rect.left,y:anchor.y-rect.top}};
+  // Keep the text selection intact while moving the pinned tools by their heading.
+  const savePosition=()=>{try{localStorage.setItem(BODY_POPUP_POSITION_KEY,JSON.stringify(bodyPopupPreference));}catch{}};
+  let drag=null;
+  edit.finishPopupDrag=(cancel=false)=>{
+    if(!drag)return;
+    const current=drag;drag=null;panel.classList.remove('is-dragging');
+    if(cancel){bodyPopupPreference={...current.preference};positionBodyPopup(edit);}
+    else{const rect=panel.getBoundingClientRect();bodyPopupPreference={pinned:true,left:rect.left,top:rect.top};savePosition();}
+    try{heading.releasePointerCapture(current.id);}catch{}
+  };
+  heading.addEventListener('pointerdown',event=>{
+    if(!bodyPopupPreference.pinned||event.button!==0||event.target.closest('button')||drag)return;
+    rememberDirectBodySelection();event.preventDefault();
+    const rect=panel.getBoundingClientRect();drag={id:event.pointerId,x:event.clientX,y:event.clientY,left:rect.left,top:rect.top,preference:{...bodyPopupPreference}};
+    panel.classList.add('is-dragging');try{heading.setPointerCapture(event.pointerId);}catch{}
+  },{signal:events.signal});
+  window.addEventListener('pointermove',event=>{
+    if(!drag||event.pointerId!==drag.id)return;event.preventDefault();
+    bodyPopupPreference={pinned:true,left:drag.left+event.clientX-drag.x,top:drag.top+event.clientY-drag.y};positionBodyPopup(edit);
+  },{signal:events.signal,passive:false});
+  window.addEventListener('pointerup',event=>{if(drag&&event.pointerId===drag.id)edit.finishPopupDrag();},{signal:events.signal});
+  window.addEventListener('pointercancel',event=>{if(drag&&event.pointerId===drag.id)edit.finishPopupDrag(true);},{signal:events.signal});
+  heading.addEventListener('lostpointercapture',()=>edit.finishPopupDrag(),{signal:events.signal});
+  heading.addEventListener('keydown',event=>{
+    if(!bodyPopupPreference.pinned||event.target!==heading||event.ctrlKey||event.metaKey||event.altKey)return;
+    const direction={ArrowLeft:[-1,0],ArrowRight:[1,0],ArrowUp:[0,-1],ArrowDown:[0,1]}[event.key];if(!direction)return;
+    event.preventDefault();edit.finishPopupDrag();const rect=panel.getBoundingClientRect(),step=event.shiftKey?1:10;
+    bodyPopupPreference={pinned:true,left:rect.left+direction[0]*step,top:rect.top+direction[1]*step};positionBodyPopup(edit);
+    const moved=panel.getBoundingClientRect();bodyPopupPreference.left=moved.left;bodyPopupPreference.top=moved.top;savePosition();
+  },{signal:events.signal});
   panel.addEventListener('keydown',event=>restoreGroupedFormat(event,edit),{signal:events.signal});
   const schedulePosition=event=>{if(event?.target instanceof Node&&panel.contains(event.target))return;positionBodyPopup(edit);};
   window.addEventListener('resize',schedulePosition,{signal:events.signal});window.addEventListener('scroll',schedulePosition,{capture:true,signal:events.signal});
@@ -1042,7 +1080,7 @@ function startDirectBodyEdit(ref,pointer){
 }
 function detachPreviewEditor(){
   if(!activePreviewEdit)return;
-  if(activePreviewEdit.kind==='body'){const target=activePreviewEdit.target;activePreviewEdit.events.abort();activePreviewEdit.panel.remove();target.classList.remove('preview-body-editing');target.removeAttribute('contenteditable');target.removeAttribute('spellcheck');target.removeAttribute('aria-multiline');target.querySelectorAll('[data-edit-divider]').forEach(node=>{node.removeAttribute('contenteditable');delete node.dataset.editDivider});return;}
+  if(activePreviewEdit.kind==='body'){const target=activePreviewEdit.target;activePreviewEdit.finishPopupDrag();activePreviewEdit.events.abort();activePreviewEdit.panel.remove();target.classList.remove('preview-body-editing');target.removeAttribute('contenteditable');target.removeAttribute('spellcheck');target.removeAttribute('aria-multiline');target.querySelectorAll('[data-edit-divider]').forEach(node=>{node.removeAttribute('contenteditable');delete node.dataset.editDivider});return;}
   activePreviewEdit.target?.classList.remove('preview-replaced','preview-editing-target','preview-sizing-target');activePreviewEdit.panel.remove();
 }
 function attachPreviewEditor(){

@@ -6,6 +6,7 @@
   document.body.classList.add('editor-desktop');
   byId('editor-theme-btn').setAttribute('aria-label','편집기 다크 모드');
   const make=(tag,attrs={},text='')=>{const node=document.createElement(tag);for(const [key,value]of Object.entries(attrs))node.setAttribute(key,value);node.textContent=text;return node;};
+  const chevron=()=>{const span=make('span',{'aria-hidden':'true',class:'ui-section-chevron'});span.innerHTML='<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg>';return span;};
   const intro=editor.querySelector('.editor-intro');
   intro.replaceChildren(make('h1',{},'편집 설정'),make('p',{},'설정은 지면에 바로 반영됩니다.'));
   const save=editor.querySelector('.save-status');
@@ -26,7 +27,7 @@
     for(const node of config.nodes.filter(Boolean)){
       if(node.tagName==='DETAILS'){
         node.open=true;node.dataset.uiSection='';
-        if(titles[node.id])node.querySelector('summary').replaceChildren(make('span',{},titles[node.id]),make('span',{'aria-hidden':'true',class:'ui-section-chevron'},'⌄'));
+        if(titles[node.id])node.querySelector('summary').replaceChildren(make('span',{},titles[node.id]),chevron());
       }
       panel.append(node);
     }
@@ -100,21 +101,32 @@
   const search=make('input',{id:'ui-palette-search',type:'search',placeholder:'팔레트 이름 또는 작품 검색',autocomplete:'off'});
   const searchLabel=make('label',{for:search.id},'팔레트 검색'),searchNote=make('p',{class:'ui-search-status',role:'status','aria-live':'polite'});
   const paletteFields=byId('palette-settings').querySelector('.field-group');paletteFields.prepend(searchLabel,search,searchNote);
+  const gallery=byId('palette-gallery');
+  for(const [key,name]of [['custom','커스텀 · 색 지정 지면'],['transparent','커스텀 · 투명 지면']]){
+    const button=make('button',{type:'button',class:'ui-search-shortcut','data-category':'커스텀 팔레트'},name);
+    button.hidden=true;button.addEventListener('click',()=>{search.value='';filterPalettes();selectPalette(key,'커스텀 팔레트');});gallery.append(button);
+  }
   let previousSearch='';const seriesOpen=new Map();
   function filterPalettes(){
-    const query=search.value.trim().toLocaleLowerCase();
-    const gallery=byId('palette-gallery');let count=0;
-    const activeCategory=byId('palette-category-switch').querySelector('[aria-pressed="true"]')?.dataset.category;
+    const query=search.value.trim().toLocaleLowerCase();let count=0;
+    renderPalettePicker();paletteFields.classList.toggle('is-searching',!!query);
     for(const card of gallery.querySelectorAll('.palette-card-wrap')){
-      const text=(card.textContent+' '+(card.closest('[data-series]')?.dataset.series||'')).toLocaleLowerCase(),match=!query||text.includes(query);
-      card.classList.toggle('ui-search-miss',!match);if(match&&card.dataset.category===activeCategory)count++;
+      const text=(card.textContent+' '+(card.closest('[data-series]')?.dataset.series||'')+' '+card.dataset.category).toLocaleLowerCase(),match=!query||text.includes(query);
+      card.classList.toggle('ui-search-miss',!match);if(match&&!card.closest('#favorite-palette-list'))count++;
     }
     for(const series of gallery.querySelectorAll('.palette-series')){
       if(query&&!previousSearch)seriesOpen.set(series,series.open);
       const hasMatch=!!series.querySelector('.palette-card-wrap:not(.ui-search-miss)');series.classList.toggle('ui-search-miss',!!query&&!hasMatch);
       if(query&&hasMatch)series.open=true;else if(!query&&previousSearch&&seriesOpen.has(series))series.open=seriesOpen.get(series);
     }
-    searchNote.textContent=query?(activeCategory==='커스텀 팔레트'?'커스텀 팔레트는 아래에서 직접 색을 지정합니다.':count+'개의 팔레트 · 현재 분류에서 검색'):'이름으로 찾거나 아래 분류를 선택하세요.';
+    for(const heading of gallery.querySelectorAll('.palette-gallery-heading')){
+      const hasMatch=Array.from(gallery.querySelectorAll('.palette-card-wrap:not(.ui-search-miss)')).some(card=>card.dataset.category===heading.dataset.category&&!card.closest('#favorite-palette-list'));
+      heading.classList.toggle('ui-search-miss',!!query&&!hasMatch);
+    }
+    for(const button of gallery.querySelectorAll('.ui-search-shortcut')){
+      button.hidden=!query||!button.textContent.toLocaleLowerCase().includes(query);if(!button.hidden)count++;
+    }
+    searchNote.textContent=query?(count?count+'개의 팔레트 · 전체 분류에서 검색':'검색 결과가 없습니다. 다른 이름이나 작품명을 입력하세요.'):'모든 분류에서 팔레트 이름과 작품명을 검색합니다.';
     previousSearch=query;
   }
   search.addEventListener('input',filterPalettes);
