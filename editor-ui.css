@@ -1,6 +1,6 @@
 /* The editor has its own visual system. Never target publication descendants here. */
-body.editor-desktop{--ink:#272924;--muted:#74766f;--line:#dedfd8;--ui-bg:#f4f3f0;--ui-panel:#fdfdfb;--ui-header:#fdfdfb;--ui-input:#fff;--ui-accent:#30382e;--ui-accent-ink:#fff;--ui-note:#eeefea;--editor-font:Pretendard,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-family:var(--editor-font)}
-body.editor-desktop[data-editor-theme=dark]{--ink:#eeede8;--muted:#a9aba4;--line:#3c3e3b;--ui-bg:#191a1b;--ui-panel:#232426;--ui-header:#232426;--ui-input:#1d1e20;--ui-accent:#d9ded4;--ui-accent-ink:#232923;--ui-note:#30322f}
+body.editor-desktop{--ink:#171717;--muted:#737373;--line:#dedede;--ui-bg:#f5f5f5;--ui-panel:#fff;--ui-header:#fff;--ui-input:#fff;--ui-accent:#171717;--ui-accent-ink:#fff;--ui-note:#ededed;--editor-font:Pretendard,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-family:var(--editor-font)}
+body.editor-desktop[data-editor-theme=dark]{--ink:#f5f5f5;--muted:#a3a3a3;--line:#333333;--ui-bg:#090909;--ui-panel:#111111;--ui-header:#111111;--ui-input:#0c0c0c;--ui-accent:#ededed;--ui-accent-ink:#111111;--ui-note:#222222}
 .editor-desktop :is(.app-header,.editor,.workspace-nav,.preview-toolbar,.manuscript-panel,dialog,.ui-preview-help,.inspector-mobile-toggle){font-family:var(--editor-font);font-size:13px}
 .editor-desktop .app-header{height:60px;min-height:60px;position:sticky;top:0;z-index:10;padding:0 24px;gap:24px}
 .editor-desktop .brand{gap:0}.editor-desktop .brand-mark,.editor-desktop .brand-name small{display:none}
@@ -8,7 +8,10 @@ body.editor-desktop[data-editor-theme=dark]{--ink:#eeede8;--muted:#a9aba4;--line
 .editor-desktop .header-actions{gap:16px}.editor-desktop .header-actions button{min-height:36px;font-size:12px;border-radius:2px;white-space:nowrap}
 .editor-desktop .header-actions .primary-btn{padding:8px 14px;gap:7px}.editor-desktop .primary-btn>span{margin-left:0}
 .editor-desktop .save-status{display:flex;align-items:center;gap:7px;margin:0 auto 0 0;padding:0;border:0;font-size:11px;color:var(--muted)}
-.editor-desktop .status-dot{width:5px;height:5px;background:#8b9983;box-shadow:none}
+.editor-desktop .status-dot{width:5px;height:5px;background:var(--muted);box-shadow:none}
+.editor-desktop .toast{box-shadow:0 6px 20px #00000022}
+.editor-desktop dialog{box-shadow:0 18px 80px #00000055}
+.editor-desktop dialog::backdrop{background:#00000070}
 .workspace{--editor-default-width:320px}
 .editor-desktop .editor{padding:0 20px 24px;background:var(--ui-panel);scrollbar-width:thin;scrollbar-color:var(--line) transparent}
 .editor-desktop .editor-intro{position:relative;margin:0;padding:23px 0 18px;border:0}
@@ -70,7 +73,7 @@ body.editor-desktop[data-editor-theme=dark]{--ink:#eeede8;--muted:#a9aba4;--line
 .ui-preview-help>summary{display:flex;align-items:center;justify-content:flex-start;gap:6px;min-height:24px;padding:0;font-size:11px;line-height:1.6;list-style:none;cursor:pointer;max-width:max-content}
 .ui-preview-help>summary::before{content:'▸';display:block;flex:0 0 12px;width:12px;text-align:center;line-height:1}
 .ui-preview-help[open]>summary::before{content:'▾'}
-.ui-preview-help #preview-edit-help{font-size:12px;margin:8px 0 0;padding:0 0 0 18px;line-height:1.85;text-align:left}
+.ui-preview-help #preview-edit-help{font-size:12px;margin:8px 0 0;padding:0;line-height:1.85;text-align:center}
 .editor-desktop .character-editor{border:1px solid var(--line);border-radius:2px;margin:12px 0;background:var(--ui-panel)}
 .editor-desktop .character-editor>summary{display:flex;align-items:center;gap:9px;padding:10px;font-size:12px;min-width:0}
 .ui-character-thumb{display:flex;align-items:center;justify-content:center;flex:0 0 30px;width:30px;height:36px;overflow:hidden;background-color:var(--ui-note);background-size:cover;background-position:center;font-size:12px;color:var(--muted)}
