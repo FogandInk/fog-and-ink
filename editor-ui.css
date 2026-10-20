@@ -205,6 +205,8 @@ body.editor-desktop[data-editor-theme=dark]{--ink:#f5f5f5;--muted:#adadad;--line
 /* Keep chapter folding separate from clicking its editable title. */
 .editor-desktop .preview-chapter-row{display:flex;align-items:baseline;gap:6px}
 .editor-desktop .preview-chapter-row>.chapter-heading{flex:1;min-width:0}
+.editor-desktop .preview-chapter-row:has(>.preview-chapter-toggle[aria-expanded=false])>.chapter-heading{margin-bottom:0!important}
+.editor-desktop .extra-story:has(>.preview-chapter-row>.preview-chapter-toggle[aria-expanded=false]){margin-bottom:18px!important}
 .editor-desktop #newspaper .preview-chapter-summary{display:flex;align-items:center;justify-content:flex-start;gap:6px;list-style:none}
 .editor-desktop #newspaper .preview-chapter-summary::marker{content:''}
 .editor-desktop #newspaper .preview-chapter-summary::-webkit-details-marker{display:none}
