@@ -201,5 +201,4 @@ body.editor-desktop[data-editor-theme=dark]{--ink:#f5f5f5;--muted:#adadad;--line
 .editor-desktop #risu-image-status:empty{margin:0}
 .editor-desktop #youtube-hint{margin-bottom:0}
 .editor-desktop .editor label[for=video-style]{margin-top:16px}
-.editor-desktop #credits-dialog .credits-guide{border-top:0}
-.editor-desktop #credits-dialog .credits-resource{margin-top:16px}
+.editor-desktop #credits-dialog .credits-resources{display:grid;gap:16px}
