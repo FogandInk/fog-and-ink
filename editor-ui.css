@@ -100,8 +100,13 @@ body.editor-desktop[data-editor-theme=dark]{--ink:#f5f5f5;--muted:#adadad;--line
 .editor-desktop .palette-info{padding:0;border:0;border-radius:0;background:transparent;margin:0 0 16px}
 .editor-desktop .palette-info-heading strong{font-size:13px}.editor-desktop .palette-info-heading>span{font-size:11px;line-height:1.7;margin-top:4px}
 .editor-desktop .palette-roles{gap:6px}.editor-desktop .palette-roles div{font-size:10px}
-.editor-desktop .palette-card{border-radius:2px;background:var(--ui-panel);padding:7px;min-height:112px}
-.editor-desktop .palette-card-name{font-size:11px;line-height:1.6;margin-top:6px}
+.editor-desktop .palette-card{border:0;border-radius:0;outline:0;background:transparent;padding:0;min-height:0}
+.editor-desktop .palette-card[aria-pressed=true],.editor-desktop .palette-card:focus-visible{outline:0}
+.editor-desktop .palette-card-name{display:flex;justify-content:space-between;gap:6px;padding:0;font-size:11px;line-height:1.6;margin-top:8px}
+.editor-desktop .palette-card-name::after{content:'';flex:0 0 14px;text-align:right}
+.editor-desktop .palette-card[aria-pressed=true] .palette-card-name{font-weight:600}
+.editor-desktop .palette-card[aria-pressed=true] .palette-card-name::after{content:'✓'}
+.editor-desktop .palette-card:hover .palette-card-name,.editor-desktop .palette-card:focus-visible .palette-card-name{text-decoration:underline;text-underline-offset:3px}
 .editor-desktop .palette-card-sample{font-size:12px;min-height:40px;padding:9px 4px}
 .editor-desktop .palette-gallery-heading{font-size:12px;letter-spacing:0}
 .editor-desktop .palette-series{border-radius:2px}.editor-desktop .palette-series>summary{font-size:12px;min-height:40px;padding:10px 12px;line-height:20px;gap:8px}
