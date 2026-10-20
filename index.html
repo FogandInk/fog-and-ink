@@ -11,13 +11,13 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,400;6..96,500;6..96,600;6..96,700&family=DM+Sans:wght@400;500;600&family=Noto+Serif+KR:wght@400;500;600;700;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard-dynamic-subset.min.css">
-  <link rel="stylesheet" href="style.css?v=20261020-palette-buttons">
-  <link rel="stylesheet" href="editor-ui.css?v=20261020-palette-buttons">
-  <script defer src="logic.js?v=20261020-palette-buttons"></script>
+  <link rel="stylesheet" href="style.css?v=20261020-chapter-fold-setting">
+  <link rel="stylesheet" href="editor-ui.css?v=20261020-chapter-fold-setting">
+  <script defer src="logic.js?v=20261020-chapter-fold-setting"></script>
   <script defer src="export-images.js"></script>
   <script defer src="clipboard.js"></script>
-  <script defer src="app.js?v=20261020-palette-buttons"></script>
-  <script defer src="editor-ui.js?v=20261020-palette-buttons"></script>
+  <script defer src="app.js?v=20261020-chapter-fold-setting"></script>
+  <script defer src="editor-ui.js?v=20261020-chapter-fold-setting"></script>
 </head>
 <body>
   <header class="app-header">
@@ -107,7 +107,7 @@
       <div class="workspace-nav"><div class="workspace-tabs" role="tablist" aria-label="작업 화면"><button type="button" id="tab-preview" role="tab" aria-controls="panel-preview" aria-selected="true" tabindex="0" data-workspace-tab="preview">미리보기</button><button type="button" id="tab-body" role="tab" aria-controls="panel-body" aria-selected="false" tabindex="-1" data-workspace-tab="body">내용</button><button type="button" id="tab-comment" role="tab" aria-controls="panel-comment" aria-selected="false" tabindex="-1" data-workspace-tab="comment">코멘트</button></div><span class="workspace-save-note">입력하면 자동 저장</span></div>
     <section class="preview-area" id="panel-preview" role="tabpanel" aria-labelledby="tab-preview">
       <div class="preview-toolbar"><div><span class="eyebrow">지면 미리보기</span><span class="preview-title" id="layout-preview-type">TYPE A · NEWS</span></div><button type="button" id="cleanup-batch-apply-preview" class="preview-cleanup-btn" title="단어·태그 정리에서 선택한 대상에 체크한 규칙을 적용합니다." disabled><strong>단어·태그 정리</strong> 규칙 한꺼번에 적용</button><div class="preview-tools"><a class="mobile-jump" href="#editor">글 편집 ↓</a><div class="view-switch" role="group" aria-label="미리보기 폭"><button id="desktop-btn" class="active" aria-label="넓은 지면" aria-pressed="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h18v13H3zM8 21h8m-4-4v4"/></svg></button><button id="mobile-btn" aria-label="모바일 지면" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="7" y="2" width="10" height="20" rx="1"/><path d="M11 18h2"/></svg></button></div><button id="reading-btn" class="reading-btn">읽기 모드 <span aria-hidden="true">⤢</span></button></div></div>
-      <p class="preview-edit-help" id="preview-edit-help">신문 이름·제목·본문을 누르면 내용과 글자 크기를 편집할 수 있어요.<br>챕터 제목 왼쪽 화살표로 본문을 접고 펼칠 수 있어요.<br>본문의 기울임·굵게 같은 서식도 원문에서 수정할 수 있어요. 편집 도구는 클릭한 곳 옆에 나타나요.<br>대사 배경은 내용 편집의 서식 → 대사 표시에서 설정할 수 있어요.</p>
+      <p class="preview-edit-help" id="preview-edit-help">신문 이름·제목·본문을 누르면 내용과 글자 크기를 편집할 수 있어요.<br>챕터명을 누르면 ‘본문 접기 사용’도 설정할 수 있어요.<br>본문의 기울임·굵게 같은 서식도 원문에서 수정할 수 있어요. 편집 도구는 클릭한 곳 옆에 나타나요.<br>대사 배경은 내용 편집의 서식 → 대사 표시에서 설정할 수 있어요.</p>
       <article class="newspaper" id="newspaper" data-paper="ivory">
         <header class="paper-header"><div class="paper-kicker"><span>AN INDEPENDENT JOURNAL</span><span>STORIES WORTH KEEPING</span></div><div class="masthead" id="paper-name-view">FOG & INK</div><div class="paper-motto">A CHRONICLE OF MOMENTS, REAL & IMAGINED.</div><div class="folio"><span id="issue-view">VOL. I — NO. 001</span><span id="location-view">LONDON</span><span id="date-view">NOVEMBER, 1880</span></div></header>
         <section class="video-section" id="video-section" hidden><div class="video-player" id="video-player"></div><div id="video-link" class="video-link"><span>♫ &nbsp; LISTEN TO THE SCENE</span></div></section>

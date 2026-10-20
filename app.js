@@ -669,10 +669,6 @@ function moveBody(position,direction){
   finishPreviewEdit();
   if(position===0||next===0){
     const section=draft.sections[0],first={title:draft.chapter,body:draft.body,fold:draft.bodyFold,open:draft.bodyOpen};
-    const firstPreviewClosed=previewChapterCollapsed.get(draft),secondPreviewClosed=previewChapterCollapsed.get(section);
-    previewChapterCollapsed.delete(draft);previewChapterCollapsed.delete(section);
-    if(secondPreviewClosed!==undefined)previewChapterCollapsed.set(draft,secondPreviewClosed);
-    if(firstPreviewClosed!==undefined)previewChapterCollapsed.set(section,firstPreviewClosed);
     const firstCopy=clearedBodyCopies.get(draft),secondCopy=clearedBodyCopies.get(section);
     draft.chapter=section.title;draft.body=section.body;draft.bodyFold=section.fold;draft.bodyOpen=section.open;
     Object.assign(section,first);
@@ -764,7 +760,6 @@ $('character-editors').addEventListener('change',event=>{if(event.target.dataset
 $('character-editors').addEventListener('click',event=>{const button=event.target.closest('[data-character-remove],[data-character-move]');if(!button)return;event.preventDefault();const index=Number(button.closest('[data-character-index]').dataset.characterIndex);if(button.dataset.characterMove){moveCharacter(index,button.dataset.characterMove==='up'?-1:1);return;}const character=draft.characters[index];if((character.name.trim()||character.description.trim()||character.image)&&!confirm('이 캐릭터 설명을 삭제할까요?'))return;draft.characters.splice(index,1);populateCharacters();render();saveDraft();});
 $('add-character').addEventListener('click',()=>{const character={role:'none',name:'',description:'',image:'',imageX:50,imageY:50,imageZoom:100,imageShape:'square',imageRatio:1};draft.characters.push(character);openCharacterEditors.add(character);populateCharacters();render();saveDraft();$('character-name-'+(draft.characters.length-1)).focus();});
 
-const previewChapterCollapsed=new WeakMap();
 const previewFields={
   storyLabel:{selector:'#story-label-view',label:'제목 위 문구',input:'story-label'},
   paperName:{selector:'#paper-name-view',label:'신문 이름',input:'paper-name'},
@@ -862,49 +857,7 @@ function refreshPreviewTargets(){
     if(!draft.sections[index].body.trim())section.querySelector('.story-body').textContent='이곳에 이어지는 이야기를 적어 주세요.';
     for(const key of ['title','body'])markPreviewTarget(previewTarget({key,index}),{key,index},'본문 '+(index+2)+(key==='title'?' 제목':' 내용'));
   });
-  refreshPreviewChapterToggles();
 }
-function previewChapter(index){
-  const section=index<0?null:additionalPreviewSections()[index],owner=index<0?draft:draft.sections[index];
-  if(!owner)return null;
-  const fold=index<0?(draft.bodyFold?$('body-collapse'):null):(section?.matches('details')?section:null);
-  return {owner,fold,title:previewTarget(index<0?{key:'chapter'}:{key:'title',index}),body:index<0?$('body-view'):section?.querySelector('.story-body')};
-}
-function updatePreviewChapterButton(button,open){
-  const label='본문 '+(Number(button.dataset.previewChapterIndex)+2)+(open?' 접기':' 펼치기');
-  button.setAttribute('aria-expanded',String(open));button.setAttribute('aria-label',label);button.title=label;
-}
-function refreshPreviewChapterToggles(){
-  $('newspaper').querySelectorAll('.preview-chapter-toggle').forEach(button=>button.remove());
-  for(let index=-1;index<draft.sections.length;index++){
-    const chapter=previewChapter(index);if(!chapter?.title||!chapter.body)continue;
-    const {owner,fold,title,body}=chapter;
-    let row=fold?.querySelector('summary');
-    if(row)row.classList.add('preview-chapter-summary');
-    else{
-      row=title.parentElement;
-      if(!row.classList.contains('preview-chapter-row')){row=document.createElement('div');row.className='preview-chapter-row';title.before(row);row.append(title);}
-    }
-    body.hidden=!fold&&previewChapterCollapsed.get(owner)===true;
-    if(!body.id)body.id='preview-chapter-body-'+index;
-    const button=document.createElement('button');button.type='button';button.className='preview-chapter-toggle';button.dataset.previewChapterIndex=String(index);button.setAttribute('aria-controls',body.id);
-    button.innerHTML='<svg viewBox="0 0 16 16" aria-hidden="true"><path d="m6 3 5 5-5 5"/></svg>';
-    updatePreviewChapterButton(button,fold?fold.open:!body.hidden);row.prepend(button);
-  }
-}
-function togglePreviewChapter(index){
-  finishPreviewEdit();
-  const chapter=previewChapter(index);if(!chapter)return;
-  const {owner,fold,body}=chapter;
-  if(fold){fold.open=!fold.open;if(index<0)draft.bodyOpen=fold.open;else owner.open=fold.open;saveDraft();}
-  else{body.hidden=!body.hidden;previewChapterCollapsed.set(owner,body.hidden);}
-  const button=$('newspaper').querySelector('[data-preview-chapter-index="'+index+'"]');
-  if(button){updatePreviewChapterButton(button,fold?fold.open:!body.hidden);button.focus({preventScroll:true});}
-}
-$('newspaper').addEventListener('toggle',event=>{
-  const fold=event.target;if(!fold.matches('#body-collapse,.extra-fold'))return;
-  const button=fold.querySelector(':scope>summary>.preview-chapter-toggle');if(button)updatePreviewChapterButton(button,fold.open);
-},true);
 function directSourceText(element,runState){
   if(!runState){
     runState={seen:new Set(),last:new Map()};
@@ -1112,7 +1065,7 @@ function startDirectBodyEdit(ref,pointer){
   listen('paste',event=>{event.preventDefault();document.execCommand('insertText',false,event.clipboardData.getData('text/plain'));syncDirectBody();});
   listen('drop',event=>event.preventDefault());
   listen('keydown',event=>{if(event.isComposing||restoreGroupedFormat(event,edit))return;if(event.key==='Escape'){event.preventDefault();event.stopPropagation();finishPreviewEdit(true,true);}else if(event.key==='Enter'&&(event.ctrlKey||event.metaKey)){event.preventDefault();event.stopPropagation();finishPreviewEdit(false,true);}});
-  listen('focusout',event=>{if(event.relatedTarget?.closest?.('.preview-chapter-toggle'))return;if(!target.contains(event.relatedTarget)&&!panel.contains(event.relatedTarget)&&activePreviewEdit?.target===target)finishPreviewEdit();});
+  listen('focusout',event=>{if(!target.contains(event.relatedTarget)&&!panel.contains(event.relatedTarget)&&activePreviewEdit?.target===target)finishPreviewEdit();});
   target.focus({preventScroll:true});
   if(pointer){
     const point=document.caretPositionFromPoint?.(pointer.clientX,pointer.clientY);let range;
@@ -1139,13 +1092,37 @@ function attachPreviewEditor(){
   anchor.insertAdjacentElement('afterend',activePreviewEdit.panel);
   const dividerSelect=activePreviewEdit.panel.querySelector('[data-preview-divider]');if(dividerSelect)dividerSelect.value=draft.dividerStyle;
   const slider=activePreviewEdit.panel.querySelector('[data-preview-size]');if(slider){slider.value=draft[slider.dataset.previewSize];activePreviewEdit.panel.querySelector('.preview-size-control output').textContent=slider.value+'px';}
+  const foldInput=activePreviewEdit.panel.querySelector('[data-preview-fold]'),foldSetting=previewFoldSetting(activePreviewEdit.ref);
+  if(foldInput&&foldSetting)foldInput.checked=foldSetting.owner[foldSetting.key];
 }
 function finishPreviewEdit(cancel=false,restoreFocus=false){
   if(!activePreviewEdit)return;
   if(activePreviewEdit.kind==='body'&&!cancel)syncDirectBody();
-  const {ref,original,originalSize}=activePreviewEdit;detachPreviewEditor();activePreviewEdit=null;
-  if(cancel){writePreviewValue(ref,original);if(originalSize!=null)applyPreviewSize(ref,originalSize);}
+  const {ref,original,originalSize,originalFold}=activePreviewEdit;detachPreviewEditor();activePreviewEdit=null;
+  if(cancel){writePreviewValue(ref,original);if(originalSize!=null)applyPreviewSize(ref,originalSize);if(originalFold)writePreviewFold(ref,originalFold.enabled,originalFold.open);}
   render();persistNow();if(restoreFocus)previewTarget(ref)?.focus();
+}
+function previewFoldSetting(ref){
+  if(ref.characterIndex!=null)return null;
+  if(ref.index!=null&&ref.key==='title'){
+    const owner=draft.sections[ref.index];
+    return owner?{owner,key:'fold',openKey:'open',input:$('additional-editors').querySelector('[data-index="'+ref.index+'"] [data-field="fold"]')}:null;
+  }
+  return ref.key==='chapter'?{owner:draft,key:'bodyFold',openKey:'bodyOpen',input:$('body-fold')}:null;
+}
+function writePreviewFold(ref,enabled,open){
+  const setting=previewFoldSetting(ref);if(!setting)return;
+  setting.owner[setting.key]=enabled;
+  if(open!==undefined)setting.owner[setting.openKey]=open;else if(enabled)setting.owner[setting.openKey]=true;
+  if(setting.input)setting.input.checked=enabled;
+}
+function previewFoldControl(ref){
+  const setting=previewFoldSetting(ref);if(!setting)return null;
+  const label=document.createElement('label');label.className='preview-fold-control';
+  const input=document.createElement('input');input.type='checkbox';input.dataset.previewFold='';input.checked=setting.owner[setting.key];
+  label.append(input,document.createTextNode('본문 접기 사용'));
+  input.addEventListener('change',()=>{writePreviewFold(ref,input.checked);render();saveDraft();input.focus({preventScroll:true});});
+  return label;
 }
 function startPreviewEdit(ref){
   if(ref.key==='body'){startDirectBodyEdit(ref);return}
@@ -1153,6 +1130,7 @@ function startPreviewEdit(ref){
   finishPreviewEdit();
   const config=ref.characterIndex!=null?{label:'캐릭터 '+(ref.characterIndex+1)+(ref.key==='name'?' 이름':' 설명'),multiline:ref.key==='description'}:ref.index!=null?{label:'본문 '+(ref.index+2)+(ref.key==='title'?' 제목':' 내용'),multiline:ref.key==='body'}:previewFields[ref.key];
   if(!config||!previewTarget(ref))return;
+  const foldSetting=previewFoldSetting(ref),originalFold=foldSetting?{enabled:foldSetting.owner[foldSetting.key],open:foldSetting.owner[foldSetting.openKey]}:null;
   const target=previewTarget(ref),fold=target.closest('details');
   if(fold&&!fold.open){fold.open=true;if(ref.index!=null){draft.sections[ref.index].open=true;}else{draft.bodyOpen=true}saveDraft()}
   const panel=document.createElement('div');panel.className='preview-inline-editor';panel.id='preview-inline-editor';
@@ -1164,6 +1142,7 @@ function startPreviewEdit(ref){
   const hint=document.createElement('p');hint.className='preview-edit-hint';hint.textContent=ref.key==='body'?'**굵게**, *기울임*과 [HR] 구분선을 그대로 편집할 수 있어요.':ref.key==='tags'?'태그는 쉼표로 구분해 주세요.':'입력한 내용은 자동 저장됩니다.';
   panel.append(label,input);
   const sizeControl=previewSizeControl(ref);if(sizeControl)panel.appendChild(sizeControl);
+  const foldControl=previewFoldControl(ref);if(foldControl)panel.appendChild(foldControl);
   if(ref.key==='body'){
     const tools=document.createElement('div');tools.className='preview-edit-body-tools';
     const dividerLabel=document.createElement('label');dividerLabel.htmlFor='preview-divider-style';dividerLabel.textContent='구분선 · 전체 본문';
@@ -1174,7 +1153,7 @@ function startPreviewEdit(ref){
     tools.append(dividerLabel,select,insert);panel.appendChild(tools);
   }
   panel.append(hint,previewEditActions());panel.addEventListener('keydown',previewPanelShortcuts);
-  activePreviewEdit={ref,original:input.value,originalSize:sizeControl?draft[previewSizeConfig(ref).key]:null,target,panel,input};
+  activePreviewEdit={ref,original:input.value,originalSize:sizeControl?draft[previewSizeConfig(ref).key]:null,originalFold,target,panel,input};
   input.addEventListener('input',()=>{writePreviewValue(ref,input.value);if(sizeControl)previewTarget(ref).textContent=input.value||(ref.key==='paperName'?'FOG & INK':'제목 없는 이야기');});
   input.addEventListener('keydown',event=>{if(event.isComposing)return;if(event.key==='Escape'){event.preventDefault();finishPreviewEdit(true,true)}else if(event.key==='Enter'&&(event.ctrlKey||event.metaKey||!config.multiline)){event.preventDefault();finishPreviewEdit(false,true)}});
   attachPreviewEditor();input.focus({preventScroll:true});input.setSelectionRange(input.value.length,input.value.length);(sizeControl?target:panel).scrollIntoView({block:'start'});
@@ -1185,8 +1164,6 @@ $('newspaper').addEventListener('pointerdown',event=>{
   startDirectBodyEdit({key:'body',...(target.dataset.previewIndex!=null?{index:Number(target.dataset.previewIndex)}:{})},event);
 });
 $('newspaper').addEventListener('click',event=>{
-  const chapterToggle=event.target.closest('.preview-chapter-toggle');
-  if(chapterToggle){event.preventDefault();event.stopPropagation();togglePreviewChapter(Number(chapterToggle.dataset.previewChapterIndex));return;}
   if(event.target.closest('.preview-inline-editor,.preview-body-editing,.inline-fold>summary'))return;
   const target=event.target.closest('[data-preview-key]');if(!target)return;
   if(target.dataset.previewKey==='body'){startDirectBodyEdit({key:'body',...(target.dataset.previewIndex!=null?{index:Number(target.dataset.previewIndex)}:{})},event);event.stopPropagation();return;}
@@ -1194,12 +1171,11 @@ $('newspaper').addEventListener('click',event=>{
   startPreviewEdit({key:target.dataset.previewKey,...(target.dataset.previewIndex!=null?{index:Number(target.dataset.previewIndex)}:{}),...(target.dataset.previewCharacter!=null?{characterIndex:Number(target.dataset.previewCharacter)}:{})});
 },true);
 $('newspaper').addEventListener('keydown',event=>{
-  if(event.target.closest('.preview-chapter-toggle'))return;
   if(event.target.closest('.preview-inline-editor,.preview-body-editing,.inline-fold>summary')||!['Enter',' '].includes(event.key))return;
   const target=event.target.closest('[data-preview-key]');if(!target)return;event.preventDefault();event.stopPropagation();
   startPreviewEdit({key:target.dataset.previewKey,...(target.dataset.previewIndex!=null?{index:Number(target.dataset.previewIndex)}:{}),...(target.dataset.previewCharacter!=null?{characterIndex:Number(target.dataset.previewCharacter)}:{})});
 });
-document.addEventListener('pointerdown',event=>{if(event.target.closest('.preview-chapter-toggle'))return;if(activePreviewEdit?.kind==='body'&&!activePreviewEdit.target.contains(event.target)&&!activePreviewEdit.panel.contains(event.target))finishPreviewEdit()},true);
+document.addEventListener('pointerdown',event=>{if(activePreviewEdit?.kind==='body'&&!activePreviewEdit.target.contains(event.target)&&!activePreviewEdit.panel.contains(event.target))finishPreviewEdit()},true);
 document.addEventListener('focusin',event=>{if(activePreviewEdit&&event.target.closest('.editor,.app-header,.preview-toolbar,.workspace-nav'))finishPreviewEdit()},true);
 window.addEventListener('pagehide',()=>{clearTimeout(timer);persistNow()});
 populate();
