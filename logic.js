@@ -2017,6 +2017,7 @@
     return {mastheadSize:bounded(draft.mastheadSize,32,100,60,1),mastheadLineHeight:bounded(draft.mastheadLineHeight,1,1.8,1.25,20)};
   }
   function paperHeaderStyles(t,draft={}){
+    if(draft.layoutType==='journey')return journeyHeaderStyles(t,draft);
     if(draft.layoutType==='cinema')return cinemaHeaderStyles(t,draft);
     if(draft.layoutType==='music'||draft.layoutType==='diary'){
       const styles=draft.layoutType==='music'?musicHeaderStyles(t,draft):diaryHeaderStyles(t,draft);
@@ -2045,7 +2046,7 @@
     const folio=(draft.layoutType==='music'||draft.layoutType==='diary')&&!hasFolioContent(draft)?'':`<div style="${s.folio}"><span style="${s.folioLeft}">${folioText(copy.issue)}</span><span style="${s.folioCenter}">${folioText(draft.location)}</span><span style="${s.folioRight}">${folioText(draft.date)}</span></div>`;
     return `<div style="${s.kicker}"><span style="${s.kickerLeft}">${escapeHTML(copy.left)}</span><span style="${s.kickerRight}">${escapeHTML(copy.right)}</span></div><p style="${s.masthead}">${escapeHTML(draft.paperName||'FOG & INK')}</p>${copy.motto?`<p style="${s.motto}">${escapeHTML(copy.motto)}</p>`:''}${folio}`;
   }
-  function layoutCopy(draft){if(draft.layoutType==='cinema')return {left:'THE PRIVATE SCREENING',right:'A FOG & INK PICTURE',motto:'',issue:String(draft.issue||'').trim()?'PROGRAMME — '+draft.issue:'',footer:'THE END · THE STORY STAYS.'};if(draft.layoutType==='diary')return {left:'PERSONAL JOURNAL',right:'MOMENTS & MEMORIES',motto:'',issue:String(draft.issue||'').trim()?'No. '+draft.issue:'',footer:'PAGES OF TODAY, MEMORIES FOR TOMORROW.'};return draft.layoutType==='music'?{left:'PERSONAL PLAYLIST',right:'LISTENING ROOM',motto:'',issue:String(draft.issue||'').trim()?'SESSION — '+draft.issue:'',footer:'KEEP THIS ONE ON REPEAT.'}:{left:'AN INDEPENDENT JOURNAL',right:'STORIES WORTH KEEPING',motto:'A CHRONICLE OF MOMENTS, REAL & IMAGINED.',issue:String(draft.issue||'').trim()?'VOL. I — NO. '+draft.issue:'',footer:'PRINTED WITH CARE, KEPT WITH LOVE.'};}
+  function layoutCopy(draft){if(draft.layoutType==='journey')return {left:'',right:'THE CHRONICLE · E',motto:'',issue:String(draft.issue||'').trim()?'LOG '+draft.issue:'',footer:'WRITTEN ALONG THE WAY.'};if(draft.layoutType==='cinema')return {left:'THE PRIVATE SCREENING',right:'A FOG & INK PICTURE',motto:'',issue:String(draft.issue||'').trim()?'PROGRAMME — '+draft.issue:'',footer:'THE END · THE STORY STAYS.'};if(draft.layoutType==='diary')return {left:'PERSONAL JOURNAL',right:'MOMENTS & MEMORIES',motto:'',issue:String(draft.issue||'').trim()?'No. '+draft.issue:'',footer:'PAGES OF TODAY, MEMORIES FOR TOMORROW.'};return draft.layoutType==='music'?{left:'PERSONAL PLAYLIST',right:'LISTENING ROOM',motto:'',issue:String(draft.issue||'').trim()?'SESSION — '+draft.issue:'',footer:'KEEP THIS ONE ON REPEAT.'}:{left:'AN INDEPENDENT JOURNAL',right:'STORIES WORTH KEEPING',motto:'A CHRONICLE OF MOMENTS, REAL & IMAGINED.',issue:String(draft.issue||'').trim()?'VOL. I — NO. '+draft.issue:'',footer:'PRINTED WITH CARE, KEPT WITH LOVE.'};}
   function footerCredit(draft){const name=String(draft.authorName||'').replace(/\s+/g,' ').trim().slice(0,60);return 'FOG & INK'+(name?' | AUTHOR · '+name:'');}
   function footerCreditHTML(draft,t={},editable=false){const name=String(draft.authorName||'').replace(/\s+/g,' ').trim().slice(0,60),author=name?' | AUTHOR · '+escapeHTML(name):'',link='<a class="paper-home-link" href="https://fogandink.github.io/fog-and-ink/" target="_blank" rel="noopener noreferrer" style="font-family:Georgia,serif;font-size:10px;line-height:1.8;letter-spacing:.5px;color:'+escapeHTML(t.muted||'#737373')+';text-decoration:none;">FOG &amp; INK</a>';return link+(editable?'<span id="paper-author-name">'+author+'</span>':author);}
   function paperFooterHTML(draft,t){return '<div class="paper-footer" style="display:block;margin:22px 0 0;padding:0;border:0;text-align:center;color:'+t.muted+';"><div style="font-family:Georgia,serif;font-size:8px;line-height:1.8;letter-spacing:1.2px;">'+escapeHTML(layoutCopy(draft).footer)+'</div><div class="paper-byline" style="font-family:Georgia,serif;font-size:10px;line-height:1.8;letter-spacing:.5px;margin:6px 0 0;overflow-wrap:anywhere;">'+footerCreditHTML(draft,t)+'</div></div>';}
@@ -2155,6 +2156,64 @@
     const track='<div style="'+s.track+'">'+(String(draft.storyLabel||'').trim()?'<div style="'+s.label+'">'+line(draft.storyLabel)+'</div>':'')+'<div style="'+s.title+'">'+line(draft.title||'제목 없는 이야기')+'</div>'+(String(draft.subtitle||'').trim()?'<div style="'+s.subtitle+'">'+line(draft.subtitle)+'</div>':'')+(String(draft.filmSynopsis||'').trim()?'<div style="'+s.synopsis+'">'+line(draft.filmSynopsis)+'</div>':'')+(tags.length?'<div style="'+s.tags+'">'+tags.map(tag=>'<span style="'+s.tag+'">#'+escapeHTML(tag)+'</span>').join('')+'</div>':'')+'</div>';
     const poster=image?'<div style="'+s.art+'">'+coverPhotoHTML(image,draft)+'</div>':'',heroContent=draft.cinemaPosterSide==='left'?poster+track:track+poster;
     return '<div data-layout="cinema" style="display:block;width:100%;max-width:'+draft.paperWidth+'px;margin:0 auto;padding:'+draft.paperPadding+'px;box-sizing:border-box;border:0;border-radius:0;background-color:'+t.bg+';color:'+t.ink+';font-family:'+bodyFont(draft.bodyFont)+';">'+paperHeaderHTML(draft,t)+parts.video+'<div style="'+s.hero+'">'+heroContent+'</div>'+parts.models+parts.characters+parts.story+parts.additional+parts.comment+paperFooterHTML(draft,t)+'</div>';
+  }
+
+  function journeyHeaderStyles(t,draft={}){
+    const {mastheadLineHeight}=mastheadSettings(draft),mastheadSize=characterImageValue(draft.journeyMastheadSize,12,100,18),english="'Cormorant Garamond','Times New Roman',Georgia,serif";
+    const item=(width,align)=>'display:inline-block;width:'+width+'%;vertical-align:top;text-align:'+align+';overflow-wrap:anywhere;';
+    return {
+      kicker:'display:block;flex:0 1 auto;min-width:0;border:0;padding:0;margin:0;font-family:Arial,sans-serif;font-size:9px;font-weight:400;letter-spacing:1.6px;line-height:1.8;text-align:right;color:'+t.muted+';overflow-wrap:anywhere;',
+      kickerLeft:'display:none;',kickerRight:'display:inline;vertical-align:top;',
+      masthead:'display:block;flex:1 1 160px;min-width:0;font-family:'+english+';font-size:'+mastheadSize+'px;font-weight:500;font-style:normal;line-height:'+mastheadLineHeight+';letter-spacing:1px;text-align:left;margin:0;padding:0;color:'+t.ink+';overflow-wrap:anywhere;',
+      motto:'display:none;',
+      folio:'display:block;width:100%;box-sizing:border-box;border:0;border-bottom:1px solid '+t.line+';padding:10px 0;margin:0;font-family:Arial,sans-serif;font-size:9px;font-weight:400;line-height:1.8;letter-spacing:.8px;color:'+t.muted+';',
+      folioLeft:item(33.333,'left'),folioCenter:item(33.334,'center'),folioRight:item(33.333,'right')
+    };
+  }
+  function journeyStyles(t,draft={}){
+    const serif=bodyFont(draft.bodyFont),english="'Cormorant Garamond','Times New Roman',Georgia,serif",titleFont=!draft.bodyFont||draft.bodyFont==='serif'?"'Cormorant Garamond','Noto Serif KR',Batang,Georgia,serif":serif;
+    return {
+      header:'display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:10px 20px;width:100%;margin:0;padding:0;border:0;',
+      hero:'display:block;width:100%;min-width:0;margin:0;padding:0;border:0;',
+      track:'display:block;width:100%;min-width:0;box-sizing:border-box;text-align:center;margin:0;padding:28px 0 24px;border:0;',
+      label:'display:block;font-family:Arial,sans-serif;font-size:9px;font-weight:400;font-style:normal;line-height:1.8;letter-spacing:2px;text-align:center;margin:0 0 12px;color:'+t.accent+';overflow-wrap:anywhere;',
+      title:'font-family:'+titleFont+';font-size:'+characterImageValue(draft.titleSize,20,160,48)+'px;font-weight:500;font-style:normal;line-height:1.15;letter-spacing:-1px;text-align:center;white-space:pre-line;margin:0;padding:0;color:'+t.ink+';overflow-wrap:anywhere;',
+      subtitle:'display:block;font-family:'+serif+';font-size:13px;font-weight:400;font-style:normal;line-height:1.9;text-align:center;white-space:pre-line;margin:16px 0 0;padding:0;color:'+t.muted+';overflow-wrap:anywhere;',
+      ornament:'display:block;width:100%;margin:21px auto 0;padding:0;border:0;text-align:center;line-height:1;font-size:9px;color:'+t.accent+';',
+      art:'display:block;width:100%;min-width:0;max-width:100%;margin:0;padding:0;border:0;border-radius:0;background-color:transparent;',
+      metadata:'display:block;width:100%;min-width:0;margin:0;padding:0;border:0;',
+      synopsis:'display:block;max-width:520px;margin:22px auto 0;padding:0;border:0;font-family:'+serif+';font-size:13px;font-weight:400;font-style:normal;line-height:2;text-align:center;white-space:pre-line;color:'+t.ink+';overflow-wrap:anywhere;',
+      tags:'display:block;width:100%;text-align:center;line-height:2;margin:16px 0 0;padding:0;border:0;',
+      tag:'display:inline-block;vertical-align:top;font-family:'+english+';font-size:10px;font-weight:400;line-height:1.8;letter-spacing:.4px;margin:0 7px 4px 0;padding:0;border:0;border-radius:0;color:'+t.muted+';',
+      sectionLabel:'display:flex;align-items:center;gap:12px;width:100%;min-width:0;padding:0;border:0;margin:0;font-family:Arial,sans-serif;font-size:9px;font-weight:400;font-style:normal;line-height:1.8;letter-spacing:1.8px;color:'+t.accent+';',
+      sectionLabelText:'display:block;flex:0 1 auto;min-width:0;overflow-wrap:anywhere;',
+      sectionLabelRule:'display:block;flex:1 1 30px;min-width:12px;height:0;line-height:0;font-size:0;margin:0;padding:0;border:0;border-top:1px solid '+t.line+';',
+      characterGroup:'display:block;width:100%;min-width:0;margin:24px 0 0;padding:0;border:0;',
+      modelGroup:'display:block;width:100%;min-width:0;margin:0;padding:0;border:0;',
+      entriesGroup:'display:block;width:100%;min-width:0;margin:26px 0 0;padding:0;border:0;'
+    };
+  }
+  function journeyOrnamentHTML(t,draft={}){
+    const s=journeyStyles(t,draft),rule='display:inline-block;width:70px;max-width:30%;height:0;vertical-align:middle;border:0;border-top:1px solid '+t.line+';margin:0 12px;padding:0;line-height:0;font-size:0;';
+    return '<div aria-hidden="true" style="'+s.ornament+'"><span style="'+rule+'">&nbsp;</span><span style="display:inline-block;vertical-align:middle;font-family:Georgia,serif;font-size:9px;line-height:1;color:'+t.accent+';">◆</span><span style="'+rule+'">&nbsp;</span></div>';
+  }
+  function journeySectionLabelHTML(value,t,draft={}){
+    const s=journeyStyles(t,draft);
+    return '<div style="'+s.sectionLabel+'"><span style="'+s.sectionLabelText+'">'+escapeHTML(value)+'</span><span aria-hidden="true" style="'+s.sectionLabelRule+'">&nbsp;</span></div>';
+  }
+  function journeyPageHTML(draft,t,image,parts){
+    const s=journeyStyles(t,draft),h=journeyHeaderStyles(t,draft),copy=layoutCopy(draft),line=value=>escapeHTML(value).replace(/\n/g,'<br>');
+    const tags=String(draft.tags||'').split(/[,，]/).map(value=>value.trim().replace(/^#+/,'')).filter(Boolean).slice(0,30);
+    const header='<div style="'+s.header+'"><div style="'+h.masthead+'">'+line(draft.paperName||'FOG & INK')+'</div><div style="'+h.kicker+'">'+escapeHTML(copy.right)+'</div></div>';
+    const title='<div style="'+s.track+'">'+(String(draft.storyLabel||'').trim()?'<div style="'+s.label+'">'+line(draft.storyLabel)+'</div>':'')+'<div style="'+s.title+'">'+line(draft.title||'제목 없는 이야기')+'</div>'+(String(draft.subtitle||'').trim()?'<div style="'+s.subtitle+'">'+line(draft.subtitle)+'</div>':'')+journeyOrnamentHTML(t,draft)+'</div>';
+    const photo=image?'<div style="'+s.art+'">'+coverPhotoHTML(image,draft)+'</div>':'';
+    const folio=hasFolioContent(draft)?'<div style="'+h.folio+'"><span style="'+h.folioLeft+'">'+line(draft.location||'')+'</span><span style="'+h.folioCenter+'">'+line(draft.date||'')+'</span><span style="'+h.folioRight+'">'+line(copy.issue)+'</span></div>':'';
+    const synopsis=String(draft.filmSynopsis||'').trim()?'<div style="'+s.synopsis+'">'+line(draft.filmSynopsis)+'</div>':'';
+    const tagList=tags.length?'<div style="'+s.tags+'">'+tags.map(tag=>'<span style="'+s.tag+'">#'+escapeHTML(tag)+'</span>').join('')+'</div>':'';
+    const characters=parts.characters?'<div style="'+s.characterGroup+'">'+journeySectionLabelHTML('COMPANIONS',t,draft)+parts.characters+'</div>':'';
+    const models=parts.models?'<div style="'+s.modelGroup+'">'+parts.models+'</div>':'';
+    const entries='<div style="'+s.entriesGroup+'">'+journeySectionLabelHTML('JOURNAL ENTRIES',t,draft)+(parts.story||'')+(parts.additional||'')+'</div>';
+    return '<div data-layout="journey" style="display:block;width:100%;max-width:'+draft.paperWidth+'px;margin:0 auto;padding:'+draft.paperPadding+'px;box-sizing:border-box;border:0;border-radius:0;background-color:'+t.bg+';color:'+t.ink+';font-family:'+bodyFont(draft.bodyFont)+';">'+header+'<div style="'+s.hero+'">'+title+(parts.video||'')+photo+'</div><div style="'+s.metadata+'">'+folio+synopsis+tagList+'</div>'+characters+models+entries+(parts.comment||'')+paperFooterHTML(draft,t)+'</div>';
   }
 
   function safeURL(value){try{let s=String(value).trim();if(s.startsWith('//'))s='https:'+s;const u=new URL(s);return ['https:','http:'].includes(u.protocol)?u.href:''}catch{return ''}}
@@ -2491,9 +2550,9 @@
     return t[Object.hasOwn(keys,role)?keys[role]:'ink'];
   }
   function coverPhotoSettings(options={}){
-    const square=options.layoutType==='music',diary=options.layoutType==='diary',cinema=options.layoutType==='cinema',news=!square&&!diary&&!cinema,imageRatio=characterImageValue(options.imageRatio,.05,20,1.5),scale=diary?characterImageValue(options.diaryPhotoScale??options.diaryPhotoWidth,30,100,80)/100:1,poster=cinema?cinemaPosterSize(options):null,ratio=square?1:cinema?poster.width/poster.height:imageRatio/scale;
+    const square=options.layoutType==='music',diary=options.layoutType==='diary',cinema=options.layoutType==='cinema',journey=options.layoutType==='journey',news=!square&&!diary&&!cinema,imageRatio=characterImageValue(options.imageRatio,.05,20,1.5),scale=diary?characterImageValue(options.diaryPhotoScale??options.diaryPhotoWidth,30,100,80)/100:1,poster=cinema?cinemaPosterSize(options):null,ratio=square?1:cinema?poster.width/poster.height:imageRatio/scale;
     const heightCap=diary||cinema?450:400;
-    return {square,padding:Math.round(10000/ratio)/100,maxHeight:!square?Math.round((options.imageLimited?characterImageValue(options.imageHeight,100,heightCap,400):heightCap)*scale)+'px':'none',background:backgroundPhotoStyle(options.image,characterImageValue(news?options.newsImageX:options.musicCoverX,0,100,50),characterImageValue(options.imagePosition,0,100,50),characterImageValue(news?options.newsImageZoom:options.musicCoverZoom,100,300,100),imageRatio,ratio)};
+    return {square,padding:Math.round(10000/ratio)/100,maxHeight:!square?Math.round((journey?characterImageValue(options.journeyImageHeight,100,400,270):options.imageLimited?characterImageValue(options.imageHeight,100,heightCap,400):heightCap)*scale)+'px':'none',background:backgroundPhotoStyle(options.image,characterImageValue(news?options.newsImageX:options.musicCoverX,0,100,50),characterImageValue(options.imagePosition,0,100,50),characterImageValue(news?options.newsImageZoom:options.musicCoverZoom,100,300,100),imageRatio,ratio)};
   }
   function coverPhotoHTML(image,options={}){
     const s=coverPhotoSettings({...options,image});
@@ -2516,5 +2575,5 @@
     const cards=characters.map((character,index)=>{let html=characterHTML(character,t,font,options);if(preview&&html)html=html.replace('class="character-profile"','class="character-profile" data-character-index="'+index+'"');return html;}).filter(Boolean);if(!cards.length)return '';
     return `<div class="character-grid" style="display:flex;flex-wrap:wrap;align-items:flex-start;${options.music?'':'gap:0 32px;'}width:100%;min-width:0;margin:${options.gridMargin||'10px 0'};background-color:transparent;">${cards.join('')}</div>`;
   }
-  const api={cinemaPosterSize,cinemaStyles,cinemaHeaderStyles,cinemaPageHTML,dialogueBoxColor,dialogueBoxBackground,footerCredit,footerCreditHTML,paperFooterHTML,diaryPhotoFrameColor,coverPhotoSettings,diaryLabelHTML,diaryStyles,diaryHeaderStyles,diaryPageHTML,THEMES,PALETTES,paletteCategory,paletteEntries,DIVIDERS,DIVIDER_MARKER,BODY_FONTS,PRETENDARD_STYLESHEET,bodyFont,characterFontSettings,escapeHTML,layoutCopy,musicPanelBackgroundColor,musicPanelTheme,characterContentSpacing,newsContentSpacing,musicContentSpacing,musicStyles,musicControlsHTML,musicPageHTML,mastheadSettings,paperHeaderStyles,paperHeaderHTML,safeURL,safeImageURL,youtube,theme,arcaDarkModeHTML,colorHex,isDarkColor,contrastRatio,replaceLiteral,removeLiteralRanges,normalizeCleanupRules,applyCleanupRules,blocks,quotes,formatSelectedText,dividerHTML,inlineHTML,dialogueSourceSegments,foldBlocks,bodyHTML,commentHTML,characterImageValue,backgroundPhotoStyle,imageRuleColor,coverPhotoHTML,characterHTML,charactersHTML};root.FogLogic=api;if(typeof module!=='undefined'&&module.exports)module.exports=api;
+  const api={journeyStyles,journeyHeaderStyles,journeyOrnamentHTML,journeySectionLabelHTML,journeyPageHTML,cinemaPosterSize,cinemaStyles,cinemaHeaderStyles,cinemaPageHTML,dialogueBoxColor,dialogueBoxBackground,footerCredit,footerCreditHTML,paperFooterHTML,diaryPhotoFrameColor,coverPhotoSettings,diaryLabelHTML,diaryStyles,diaryHeaderStyles,diaryPageHTML,THEMES,PALETTES,paletteCategory,paletteEntries,DIVIDERS,DIVIDER_MARKER,BODY_FONTS,PRETENDARD_STYLESHEET,bodyFont,characterFontSettings,escapeHTML,layoutCopy,musicPanelBackgroundColor,musicPanelTheme,characterContentSpacing,newsContentSpacing,musicContentSpacing,musicStyles,musicControlsHTML,musicPageHTML,mastheadSettings,paperHeaderStyles,paperHeaderHTML,safeURL,safeImageURL,youtube,theme,arcaDarkModeHTML,colorHex,isDarkColor,contrastRatio,replaceLiteral,removeLiteralRanges,normalizeCleanupRules,applyCleanupRules,blocks,quotes,formatSelectedText,dividerHTML,inlineHTML,dialogueSourceSegments,foldBlocks,bodyHTML,commentHTML,characterImageValue,backgroundPhotoStyle,imageRuleColor,coverPhotoHTML,characterHTML,charactersHTML};root.FogLogic=api;if(typeof module!=='undefined'&&module.exports)module.exports=api;
 })(typeof globalThis!=='undefined'?globalThis:this);

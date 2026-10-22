@@ -169,4 +169,14 @@ label[for="main-model"],label[for="secondary-model"],label[for="prompt"]{font-we
 
 .cinema-layout .video-link{border:0!important}
 
+/* Type E: journey records, with the existing portrait and native chapter controls. */
+.journey-layout .headline-decoration{display:none}
+.journey-layout .paper-header{margin:0;padding:0;border:0}
+.journey-layout .tag-row span::before{content:none}
+.journey-layout .cover-photo,.journey-layout .image-frame{border-radius:0!important}
+.journey-layout #film-synopsis-view{box-sizing:border-box;width:100%}
+.journey-layout #journey-companions,.journey-layout #journey-entries{box-sizing:border-box}
+.journey-layout #journey-entries+.story-section{margin-top:0}
+.journey-layout .paper-fold>summary::marker{color:var(--paper-accent)}
+
 .character-editor>summary .character-editor-title{flex:1;min-width:0}.character-editor-actions{display:inline-flex;align-items:center;gap:4px;flex-shrink:0}.character-editor>summary .character-editor-actions button{min-height:28px;padding:3px 6px}.character-editor-actions [data-character-move]{min-width:28px;font-size:13px}
