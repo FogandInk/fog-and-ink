@@ -492,7 +492,7 @@ function renderJourneyLayout(t){
   $('journey-companions').hidden=$('characters-view').hidden;
   $('journey-companions').innerHTML=FogLogic.journeySectionLabelHTML('COMPANIONS',t,draft);
   $('journey-entries').hidden=false;$('journey-entries').innerHTML=FogLogic.journeySectionLabelHTML('JOURNAL ENTRIES',t,draft);
-  document.querySelector('.story-section').style.marginTop='0';
+  const journeyStory=document.querySelector('.story-section');journeyStory.style.marginTop='0';journeyStory.style.borderTop='0';
   $('chapter-view').innerHTML=chapterLabelHTML(draft.chapter,1,t);
   $('chapter-collapse-view').innerHTML=chapterLabelHTML(draft.chapter||'이야기',1,t);
   $('cover-image').style.borderRadius='0';$('layout-preview-type').textContent='TYPE E · JOURNEY';
@@ -660,7 +660,7 @@ function buildExportHTML(options={}){
   const body=bodyHTML(draft.body,t,draft.fontSize,draft.highlightDialogue,draft.bodyFont,draft.quoteBackground,draft.dividerStyle,draft);const chapter=p(chapterTitleStyle(t),chapterLabelHTML(draft.chapter||'이야기',1,t));
   const storyContent=draft.bodyFold?`<details style="display:block;border:0;margin:0;padding:0;"><summary style="cursor:pointer;padding:18px 0;${chapterTitleStyle(t)}">${chapterLabelHTML(draft.chapter||'이야기',1,t)}</summary><div style="margin-top:16px;">${body}</div></details>`:`${draft.chapter.trim()?`<div style="margin:0 0 25px;">${chapter}</div>`:''}${body}`;
   const storyMarginTop=draft.layoutType==='journey'?0:characterSpacing.hasCharacters?characterSpacing.storyMarginTop:draft.layoutType==='diary'?14:draft.layoutType==='music'?FogLogic.musicContentSpacing(draft).storyMarginTop:FogLogic.newsContentSpacing(draft).storyMarginTop;
-  const story=sectionRuleHTML(t,storyMarginTop+'px 0 '+(draft.bodyFold?'0':'20px'))+storyContent+sectionRuleHTML(t,'0');
+  const story=draft.layoutType==='journey'?`<div style="padding:${draft.bodyFold?'0':'20px'} 0 0;margin:0;border:0;">${storyContent}</div>`+sectionRuleHTML(t,'0'):sectionRuleHTML(t,storyMarginTop+'px 0 '+(draft.bodyFold?'0':'20px'))+storyContent+sectionRuleHTML(t,'0');
   const commentContent=commentHTML(draft.comment,t,draft.commentAlign,draft.bodyFont,draft.dividerStyle,draft.customDivider);
   const comment=draft.commentEnabled&&draft.comment.trim()?`<div style="border:0;border-top:3px double ${t.line};margin:36px 0 0;padding:0;">${draft.commentFold?`<details style="display:block;border:0;padding:0;"><summary style="cursor:pointer;padding:20px 0;color:${t.ink};${draft.layoutType==='music'?chapterTitleStyle(t):'font-size:19px;font-family:'+serif+';'}">Comment</summary><div style="padding:0 0 20px;">${commentContent}</div></details>`:`<div style="padding:22px 0;">${p(little,'FROM THE MARGIN')}${p(draft.layoutType==='music'?chapterTitleStyle(t)+'margin:9px 0 18px;':`font-family:${serif};font-size:20px;color:${t.ink};margin:9px 0 18px;`,'Comment')}${commentContent}</div>`}</div>`:'';
   if(draft.layoutType==='journey')return FogLogic.journeyPageHTML(draft,t,imgSrc,{video:videoHTML,models,characters,story,additional:draft.sections.map((s,i)=>sectionHTML(s,i,t,true)).join(''),comment});
