@@ -110,7 +110,11 @@ body.editor-desktop[data-editor-theme=dark]{--ink:#f5f5f5;--muted:#adadad;--line
 .editor-desktop .palette-card-sample{font-size:12px;min-height:40px;padding:9px 4px}
 .editor-desktop .palette-gallery-heading{font-size:12px;letter-spacing:0}
 .editor-desktop .palette-series{border-radius:2px}.editor-desktop .palette-series>summary{font-size:12px;min-height:40px;padding:10px 12px;line-height:20px;gap:8px}
-.editor-desktop #character-palette-gallery>.palette-gallery{row-gap:0}
+.editor-desktop #character-palette-gallery>.palette-gallery{row-gap:0;padding-bottom:0}
+.editor-desktop #character-palette-gallery{border-bottom:0}
+.editor-desktop #character-palette-gallery>h4{margin-bottom:8px}
+.editor-desktop #character-palette-gallery .palette-gallery-heading{margin:8px 0 6px}
+.editor-desktop .editor #palette-settings>.field-group:has(>#character-palette-gallery:not([hidden])){padding-bottom:12px}
 .editor-desktop .palette-series-count{font-size:10px;line-height:20px}
 .editor-desktop .palette-series-toggle{display:inline-flex;align-items:center;justify-content:center;flex:0 0 16px;width:16px;height:20px;line-height:1}
 .ui-search-status{margin:7px 0 0;font-size:11px;line-height:1.7;color:var(--muted)}
