@@ -2274,7 +2274,7 @@ akFiammetta:{"name":"피아메타","note":"붉은 주황 머리·검은 장비·
       art:'display:block;width:100%;min-width:0;max-width:100%;margin:0;padding:0;border:0;border-radius:0;background-color:transparent;',
       metadata:'display:block;width:100%;min-width:0;margin:0;padding:0;border:0;',
       synopsis:'display:block;max-width:520px;margin:22px auto 0;padding:0;border:0;font-family:'+serif+';font-size:13px;font-weight:400;font-style:normal;line-height:2;text-align:center;white-space:pre-line;color:'+t.ink+';overflow-wrap:anywhere;',
-      tags:'display:block;width:100%;text-align:center;line-height:2;margin:16px 0 0;padding:0;border:0;',
+      tags:'display:block;width:100%;text-align:center;line-height:2;margin:'+(String(draft.filmSynopsis||'').trim()?16:24)+'px 0 0;padding:0;border:0;',
       tag:'display:inline-block;vertical-align:top;font-family:'+english+';font-size:10px;font-weight:400;line-height:1.8;letter-spacing:.4px;margin:0 7px 4px 0;padding:0;border:0;border-radius:0;color:'+t.muted+';',
       sectionLabel:'display:flex;align-items:center;gap:12px;width:100%;min-width:0;padding:0;border:0;margin:0;font-family:Arial,sans-serif;font-size:9px;font-weight:400;font-style:normal;line-height:1.8;letter-spacing:1.8px;color:'+t.accent+';',
       sectionLabelText:'display:block;flex:0 1 auto;min-width:0;overflow-wrap:anywhere;',
