@@ -11,13 +11,13 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Bodoni+Moda:opsz,wght@6..96,400;6..96,500;6..96,600;6..96,700&family=DM+Sans:wght@400;500;600&family=Noto+Serif+KR:wght@400;500;600;700;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard-dynamic-subset.min.css">
-  <link rel="stylesheet" href="style.css?v=20261101-journey-tag-offset">
-  <link rel="stylesheet" href="editor-ui.css?v=20261101-journey-tag-offset">
-  <script defer src="logic.js?v=20261101-journey-tag-offset"></script>
+  <link rel="stylesheet" href="style.css?v=20261101-cinema-name-align">
+  <link rel="stylesheet" href="editor-ui.css?v=20261101-cinema-name-align">
+  <script defer src="logic.js?v=20261101-cinema-name-align"></script>
   <script defer src="export-images.js"></script>
   <script defer src="clipboard.js"></script>
-  <script defer src="app.js?v=20261101-journey-tag-offset"></script>
-  <script defer src="editor-ui.js?v=20261101-journey-tag-offset"></script>
+  <script defer src="app.js?v=20261101-cinema-name-align"></script>
+  <script defer src="editor-ui.js?v=20261101-cinema-name-align"></script>
 </head>
 <body>
   <header class="app-header">
@@ -69,6 +69,7 @@
         </div></details>
         <details id="title-editor"><summary><span><b>02</b> 타이틀</span><span class="expand">+</span></summary><div class="field-group">
           <label for="paper-name">신문 이름</label><input id="paper-name" maxlength="40">
+          <div id="cinema-masthead-align-setting" hidden><label for="cinema-masthead-align">신문 이름 정렬</label><select id="cinema-masthead-align"><option value="left">왼쪽</option><option value="center">가운데</option><option value="right">오른쪽</option></select></div>
           <label for="masthead-size">신문 이름 글자 크기 <span id="masthead-size-value">60px</span></label><input id="masthead-size" type="range" min="32" max="100" step="1" value="60">
           <label for="masthead-line-height">신문 이름 줄 높이 <span id="masthead-line-height-value">75px · 1.25배</span></label><input id="masthead-line-height" type="range" min="1" max="1.8" step="0.05" value="1.25"><p class="field-hint">글자 크기와 줄 높이를 따로 조절합니다. 줄 높이는 글자 크기의 1–1.8배입니다.</p>
           <div class="field-pair"><div><label for="issue">발행 호</label><input id="issue" maxlength="20"></div><div><label for="location">장소</label><input id="location" maxlength="60"></div></div>
