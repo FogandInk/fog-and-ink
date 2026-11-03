@@ -43,10 +43,17 @@
   const footer=editor.querySelector('.editor-footer');
   const characterCount=make('output',{id:'body-character-count','aria-label':'전체 챕터 본문 글자 수, 공백과 줄바꿈 포함'});
   const countRow=make('p',{class:'ui-body-count',title:'전체 챕터의 본문을 합산합니다. 공백과 줄바꿈을 포함합니다.'});
-  countRow.append(make('span',{},'본문 글자 수'),characterCount);footer.prepend(countRow);
+  const characterCountNoSpaces=make('output',{id:'body-character-count-no-spaces','aria-label':'전체 챕터 본문 글자 수, 공백 제외'});
+  const noSpacesRow=make('p',{class:'ui-body-count',title:'띄어쓰기, 줄바꿈, 탭 등 공백 문자를 제외합니다.'});
+  countRow.append(make('span',{},'본문 글자 수'),characterCount);
+  noSpacesRow.append(make('span',{},'공백 제외'),characterCountNoSpaces);
+  const countGroup=make('div',{class:'ui-body-counts'});countGroup.append(countRow,noSpacesRow);footer.prepend(countGroup);
   function refreshCharacterCount(){
-    const count=[draft.body,...draft.sections.map(section=>section.body)].reduce((total,body)=>total+Array.from(String(body||'').replace(/\r\n?/g,'\n')).length,0);
+    const bodies=[draft.body,...draft.sections.map(section=>section.body)].map(body=>String(body||'').replace(/\r\n?/g,'\n'));
+    const count=bodies.reduce((total,body)=>total+Array.from(body).length,0);
+    const noSpaces=bodies.reduce((total,body)=>total+Array.from(body.replace(/\s/g,'')).length,0);
     characterCount.textContent=count.toLocaleString('ko-KR')+'자';
+    characterCountNoSpaces.textContent=noSpaces.toLocaleString('ko-KR')+'자';
   }
   editor.querySelector('.editor-signoff')?.remove();editor.querySelector('.editor-ornament')?.remove();
   const mobileButton=make('button',{type:'button',id:'inspector-mobile-toggle','aria-label':'편집 설정 열기','aria-controls':'editor','aria-expanded':'false',class:'inspector-mobile-toggle'},'편집 설정 열기');
