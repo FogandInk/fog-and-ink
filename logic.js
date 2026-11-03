@@ -2298,7 +2298,7 @@ akFiammetta:{"name":"피아메타","note":"붉은 주황 머리·검은 장비·
     return {
       header:'display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:10px 20px;width:100%;margin:0;padding:0;border:0;',
       hero:'display:block;width:100%;min-width:0;margin:0;padding:0;border:0;',
-      track:'display:block;width:100%;min-width:0;box-sizing:border-box;text-align:center;margin:0;padding:28px 0 24px;border:0;',
+      track:'display:block;width:100%;min-width:0;box-sizing:border-box;text-align:center;margin:0;padding:'+(String(draft.paperName||'').trim()?28:18)+'px 0 24px;border:0;',
       label:'display:block;font-family:Arial,sans-serif;font-size:9px;font-weight:400;font-style:normal;line-height:1.8;letter-spacing:2px;text-align:center;margin:0 0 12px;color:'+t.accent+';overflow-wrap:anywhere;',
       title:'font-family:'+titleFont+';font-size:'+characterImageValue(draft.titleSize,20,160,48)+'px;font-weight:500;font-style:normal;line-height:1.15;letter-spacing:-1px;text-align:center;white-space:pre-line;margin:0;padding:0;color:'+t.ink+';overflow-wrap:anywhere;',
       subtitle:'display:block;font-family:'+serif+';font-size:13px;font-weight:400;font-style:normal;line-height:1.9;text-align:center;white-space:pre-line;margin:16px 0 0;padding:0;color:'+t.muted+';overflow-wrap:anywhere;',
