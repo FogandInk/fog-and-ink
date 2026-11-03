@@ -2327,7 +2327,7 @@ akFiammetta:{"name":"피아메타","note":"붉은 주황 머리·검은 장비·
   function journeyPageHTML(draft,t,image,parts){
     const s=journeyStyles(t,draft),h=journeyHeaderStyles(t,draft),copy=layoutCopy(draft),line=value=>escapeHTML(value).replace(/\n/g,'<br>');
     const tags=String(draft.tags||'').split(/[,，]/).map(value=>value.trim().replace(/^#+/,'')).filter(Boolean).slice(0,30);
-    const header='<div style="'+s.header+'"><div style="'+h.masthead+'">'+line(draft.paperName||'FOG & INK')+'</div><div style="'+h.kicker+'">'+escapeHTML(copy.right)+'</div></div>';
+    const header=String(draft.paperName||'').trim()?'<div style="'+s.header+'"><div style="'+h.masthead+'">'+line(draft.paperName)+'</div><div style="'+h.kicker+'">'+escapeHTML(copy.right)+'</div></div>':'';
     const title='<div style="'+s.track+'">'+(String(draft.storyLabel||'').trim()?'<div style="'+s.label+'">'+line(draft.storyLabel)+'</div>':'')+'<div style="'+s.title+'">'+line(draft.title||'제목 없는 이야기')+'</div>'+(String(draft.subtitle||'').trim()?'<div style="'+s.subtitle+'">'+line(draft.subtitle)+'</div>':'')+journeyOrnamentHTML(t,draft)+'</div>';
     const photo=image?'<div style="'+s.art+'">'+coverPhotoHTML(image,draft)+'</div>':'';
     const folio=hasFolioContent(draft)?'<div style="'+h.folio+'"><span style="'+h.folioLeft+'">'+line(draft.location||'')+'</span><span style="'+h.folioCenter+'">'+line(draft.date||'')+'</span><span style="'+h.folioRight+'">'+line(copy.issue)+'</span></div>':'';

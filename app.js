@@ -478,6 +478,7 @@ function renderJourneyLayout(t){
   const header=document.querySelector('.paper-header'),hero=$('hero'),track=document.querySelector('.headline-block'),folio=header.querySelector('.folio');
   sheet.classList.add('journey-layout');sheet.style.borderRadius='0';sheet.style.backgroundImage='none';
   header.style.cssText=s.header;header.prepend($('paper-name-view'));
+  if(!draft.paperName.trim())header.style.display='none';
   track.append($('subtitle-view'),$('journey-title-mark'));
   $('journey-title-mark').hidden=false;$('journey-title-mark').innerHTML=FogLogic.journeyOrnamentHTML(t,draft);
   hero.append(track,$('video-section'),$('image-frame'),folio);
@@ -518,7 +519,7 @@ function render(){
   $('story-label-view').textContent=draft.storyLabel;$('story-label-view').hidden=!draft.storyLabel.trim();
   document.querySelector('.headline-block').classList.toggle('no-story-label',!draft.storyLabel.trim());
   $('title-view').textContent=draft.title||'제목 없는 이야기';$('subtitle-view').textContent=draft.subtitle;$('subtitle-view').hidden=!draft.subtitle.trim();
-  $('paper-name-view').textContent=draft.paperName||'FOG & INK';$('issue-view').textContent=`VOL. I — NO. ${draft.issue}`;$('location-view').textContent=draft.location.trim()?draft.location:'\u00a0';$('date-view').textContent=draft.date.trim()?draft.date:'\u00a0';
+  $('paper-name-view').textContent=draft.layoutType==='journey'?draft.paperName:draft.paperName||'FOG & INK';$('issue-view').textContent=`VOL. I — NO. ${draft.issue}`;$('location-view').textContent=draft.location.trim()?draft.location:'\u00a0';$('date-view').textContent=draft.date.trim()?draft.date:'\u00a0';
   const tags=tagsOf(draft.tags);$('tags-view').hidden=!tags.length;$('tags-view').replaceChildren(...tags.map(text=>{const s=document.createElement('span');s.textContent=text;return s}));
   const modelRows=[['Main Model',draft.mainModel],['Sub Model',draft.secondaryModel],['Prompt',draft.prompt]];$('model-info').replaceChildren(...modelRows.map(([label,value])=>{const item=document.createElement('div'),key=document.createElement('strong'),content=document.createElement('span');item.className='model-item';key.textContent=label;content.textContent=value.trim()||'—';item.append(key,content);return item}));$('model-info').hidden=!modelRows.some(([,v])=>v.trim());
   for(const character of draft.characters)if(character.image){const cached=backgroundImages.get(character.image);if(cached?.status==='ready')character.imageRatio=cached.ratio;loadBackgroundSize(character.image);}
@@ -1209,7 +1210,7 @@ function startPreviewEdit(ref){
   }
   panel.append(hint,previewEditActions());panel.addEventListener('keydown',previewPanelShortcuts);
   activePreviewEdit={ref,original:input.value,originalSize:sizeControl?draft[previewSizeConfig(ref).key]:null,originalFold,target,panel,input};
-  input.addEventListener('input',()=>{writePreviewValue(ref,input.value);if(sizeControl)previewTarget(ref).textContent=input.value||(ref.key==='paperName'?'FOG & INK':'제목 없는 이야기');});
+  input.addEventListener('input',()=>{writePreviewValue(ref,input.value);if(sizeControl)previewTarget(ref).textContent=input.value||(ref.key==='paperName'?(draft.layoutType==='journey'?'':'FOG & INK'):'제목 없는 이야기');});
   input.addEventListener('keydown',event=>{if(event.isComposing)return;if(event.key==='Escape'){event.preventDefault();finishPreviewEdit(true,true)}else if(event.key==='Enter'&&(event.ctrlKey||event.metaKey||!config.multiline)){event.preventDefault();finishPreviewEdit(false,true)}});
   attachPreviewEditor();input.focus({preventScroll:true});input.setSelectionRange(input.value.length,input.value.length);(sizeControl?target:panel).scrollIntoView({block:'start'});
 }
