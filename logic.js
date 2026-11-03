@@ -2295,6 +2295,7 @@ akFiammetta:{"name":"피아메타","note":"붉은 주황 머리·검은 장비·
   }
   function journeyStyles(t,draft={}){
     const serif=bodyFont(draft.bodyFont),english="'Cormorant Garamond','Times New Roman',Georgia,serif",titleFont=!draft.bodyFont||draft.bodyFont==='serif'?"'Cormorant Garamond','Noto Serif KR',Batang,Georgia,serif":serif;
+    const hasSynopsis=!!String(draft.filmSynopsis||'').trim(),hasTags=String(draft.tags||'').split(/[,，]/).some(value=>value.trim().replace(/^#+/,'').length>0);
     return {
       header:'display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:10px 20px;width:100%;margin:0;padding:0;border:0;',
       hero:'display:block;width:100%;min-width:0;margin:0;padding:0;border:0;',
@@ -2306,12 +2307,12 @@ akFiammetta:{"name":"피아메타","note":"붉은 주황 머리·검은 장비·
       art:'display:block;width:100%;min-width:0;max-width:100%;margin:0;padding:0;border:0;border-radius:0;background-color:transparent;',
       metadata:'display:block;width:100%;min-width:0;margin:0;padding:0;border:0;',
       synopsis:'display:block;max-width:520px;margin:22px auto 0;padding:0;border:0;font-family:'+serif+';font-size:13px;font-weight:400;font-style:normal;line-height:2;text-align:center;white-space:pre-line;color:'+t.ink+';overflow-wrap:anywhere;',
-      tags:'display:block;width:100%;text-align:center;line-height:2;margin:'+(String(draft.filmSynopsis||'').trim()?'16px 0 0':'24px 0 -8px')+';padding:0;border:0;',
-      tag:'display:inline-block;vertical-align:top;font-family:'+english+';font-size:10px;font-weight:400;line-height:1.8;letter-spacing:.4px;margin:0 7px 4px 0;padding:0;border:0;border-radius:0;color:'+t.muted+';',
+      tags:'display:block;width:100%;text-align:center;font-size:10px;line-height:1.8;margin:'+(hasSynopsis?16:24)+'px 0 0;padding:0;border:0;',
+      tag:'display:inline-block;vertical-align:top;font-family:'+english+';font-size:10px;font-weight:400;line-height:1.8;letter-spacing:.4px;margin:0 7px 0 0;padding:0;border:0;border-radius:0;color:'+t.muted+';',
       sectionLabel:'display:flex;align-items:center;gap:12px;width:100%;min-width:0;padding:0;border:0;margin:0;font-family:Arial,sans-serif;font-size:9px;font-weight:400;font-style:normal;line-height:1.8;letter-spacing:1.8px;color:'+t.accent+';',
       sectionLabelText:'display:block;flex:0 1 auto;min-width:0;overflow-wrap:anywhere;',
       sectionLabelRule:'display:block;flex:1 1 30px;min-width:12px;height:0;line-height:0;font-size:0;margin:0;padding:0;border:0;border-top:1px solid '+t.line+';',
-      characterGroup:'display:block;width:100%;min-width:0;margin:24px 0 0;padding:0;border:0;',
+      characterGroup:'display:block;width:100%;min-width:0;margin:'+(hasSynopsis&&hasTags?16:24)+'px 0 0;padding:0;border:0;',
       modelGroup:'display:block;width:100%;min-width:0;margin:0;padding:0;border:0;',
       entriesGroup:'display:block;width:100%;min-width:0;margin:26px 0 0;padding:0;border:0;'
     };
