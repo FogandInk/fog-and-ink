@@ -54,7 +54,8 @@ body.editor-desktop[data-editor-theme=dark]{--ink:#f5f5f5;--muted:#adadad;--line
 .editor-desktop .editor .editor-shortcuts{padding:12px 0;border-top:1px solid var(--line);border-bottom:0}
 .editor-desktop .editor .editor-shortcuts button{padding:10px 12px 10px 0;font-size:12px;min-height:36px}
 .editor-desktop .editor-footer{padding:18px 0 0;margin:0;border-top:1px solid var(--line)}
-.ui-footer-label{margin:0 0 10px;font-size:11px;color:var(--muted)}
+.ui-body-count{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin:0 0 10px;font-size:11px;line-height:1.6;color:var(--muted)}
+.ui-body-count output{font-weight:600;font-variant-numeric:tabular-nums;color:var(--ink)}
 .editor-desktop .editor-footer>button{font-size:12px;padding:9px 10px;min-height:36px;border:1px solid var(--line);border-radius:2px;width:100%;background:var(--ui-panel)}
 .editor-desktop .footer-links{justify-content:space-between;margin-top:10px}.editor-desktop .footer-links button{font-size:11px;min-height:30px;padding:4px 0}
 .editor-desktop .credits-entry{justify-content:center;margin:12px 0 0}.editor-desktop .credits-entry button{font-size:10px;letter-spacing:1px;min-height:36px;padding:8px 14px;border:1px solid var(--line);border-radius:0;background:var(--ui-panel);color:var(--muted);text-align:center}

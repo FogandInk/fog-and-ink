@@ -41,7 +41,13 @@
   const help=byId('preview-edit-help');
   if(help){const fold=make('details',{class:'ui-preview-help'});fold.append(make('summary',{},'미리보기 편집 안내'));help.before(fold);fold.append(help);}
   const footer=editor.querySelector('.editor-footer');
-  footer.prepend(make('p',{class:'ui-footer-label'},'파일과 보관'));
+  const characterCount=make('output',{id:'body-character-count','aria-label':'전체 챕터 본문 글자 수, 공백과 줄바꿈 포함'});
+  const countRow=make('p',{class:'ui-body-count',title:'전체 챕터의 본문을 합산합니다. 공백과 줄바꿈을 포함합니다.'});
+  countRow.append(make('span',{},'본문 글자 수'),characterCount);footer.prepend(countRow);
+  function refreshCharacterCount(){
+    const count=[draft.body,...draft.sections.map(section=>section.body)].reduce((total,body)=>total+Array.from(String(body||'').replace(/\r\n?/g,'\n')).length,0);
+    characterCount.textContent=count.toLocaleString('ko-KR')+'자';
+  }
   editor.querySelector('.editor-signoff')?.remove();editor.querySelector('.editor-ornament')?.remove();
   const mobileButton=make('button',{type:'button',id:'inspector-mobile-toggle','aria-label':'편집 설정 열기','aria-controls':'editor','aria-expanded':'false',class:'inspector-mobile-toggle'},'편집 설정 열기');
   document.querySelector('.workspace-nav').after(mobileButton);
@@ -142,9 +148,9 @@
   }
   side.after(sideButtons);side.hidden=true;
   function refresh(){
-    mountNumbers();refreshCharacters();filterPalettes();
+    mountNumbers();refreshCharacters();filterPalettes();refreshCharacterCount();
     sideButtons.querySelectorAll('button').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.posterSide===side.value)));
   }
-  globalThis.FogEditorUI={refresh};refresh();
+  globalThis.FogEditorUI={refresh,refreshCharacterCount};refresh();
   new MutationObserver(()=>{mountNumbers();refreshCharacters();}).observe(byId('character-editors'),{childList:true});
 })();

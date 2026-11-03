@@ -560,7 +560,7 @@ function render(){
 }
 function persistNow(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(draft));$('save-status').textContent='이 브라우저에 저장됨'}catch{$('save-status').textContent='저장 공간 부족 · 초안 파일로 보관해 주세요'}}
 window.addEventListener('pagehide',persistNow);
-function saveDraft(){clearTimeout(timer);timer=setTimeout(persistNow,300)}
+function saveDraft(){globalThis.FogEditorUI?.refreshCharacterCount?.();clearTimeout(timer);timer=setTimeout(persistNow,300)}
 function toast(message){$('toast').textContent=message;$('toast').classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('toast').classList.remove('show'),3500)}
 $('editor-form').addEventListener('submit',e=>e.preventDefault());
 for(const[id,storedKey]of Object.entries(fields))$(id).addEventListener('input',()=>{if(storedKey==='layoutType'&&activePreviewEdit)finishPreviewEdit(false);const key=['news','journey'].includes(draft.layoutType)&&id==='image-zoom'?'newsImageZoom':['news','journey'].includes(draft.layoutType)&&id==='image-position-x'?'newsImageX':draft.layoutType==='journey'&&id==='masthead-size'?'journeyMastheadSize':draft.layoutType==='journey'&&id==='image-height'?'journeyImageHeight':storedKey;const previousLayout=draft.layoutType,previousPanelMode=draft.musicPanelColorMode,previousQuoteMode=draft.quoteBackgroundColorMode;draft[key]=numericFields.has(key)?Number($(id).value):$(id).value;if(key==='quoteBackgroundColorMode'&&draft[key]==='custom'&&!draft.quoteBackgroundColor)draft.quoteBackgroundColor=FogLogic.dialogueBoxColor(theme(draft.paper,draft.transparentInk,draft),{quoteBackgroundColorMode:previousQuoteMode});if(key==='diaryPhotoColorRole')draft.diaryPhotoCustomColor=draft[key]==='custom';if(key==='musicPanelColorMode'&&draft[key]==='custom'&&!draft.musicPanelColor){const t=theme(draft.paper,draft.transparentInk,draft);draft.musicPanelColor=FogLogic.colorHex(FogLogic.musicPanelTheme(t,{...draft,musicPanelColorMode:previousPanelMode}).bg,t.quote);}if(key==='layoutType'){
@@ -1156,7 +1156,7 @@ function finishPreviewEdit(cancel=false,restoreFocus=false){
   if(activePreviewEdit.kind==='body'&&!cancel)syncDirectBody();
   const {ref,original,originalSize,originalFold}=activePreviewEdit;detachPreviewEditor();activePreviewEdit=null;
   if(cancel){writePreviewValue(ref,original);if(originalSize!=null)applyPreviewSize(ref,originalSize);if(originalFold)writePreviewFold(ref,originalFold.enabled,originalFold.open);}
-  render();persistNow();if(restoreFocus)previewTarget(ref)?.focus();
+  render();persistNow();if(restoreFocus)previewTarget(ref)?.focus({preventScroll:true});
 }
 function previewFoldSetting(ref){
   if(ref.characterIndex!=null)return null;
